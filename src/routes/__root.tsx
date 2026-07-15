@@ -88,10 +88,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Biblioteca digital, controle de tarefas e relatórios para professores da Escola Discover.",
+          "Sistema de controle acadêmico da Escola Discover: biblioteca digital, turmas, tarefas e relatórios em um só lugar.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Discover · Controle Acadêmico" },
+      { name: "twitter:description", content: "Sistema de controle acadêmico da Escola Discover: biblioteca digital, turmas, tarefas e relatórios em um só lugar." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/54b84a52-57bb-4bef-b723-c7ffbb7411a2/id-preview-baf38556--29718630-87e1-4aa2-8845-b17fe31c462d.lovable.app-1784133575769.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/54b84a52-57bb-4bef-b723-c7ffbb7411a2/id-preview-baf38556--29718630-87e1-4aa2-8845-b17fe31c462d.lovable.app-1784133575769.png" },
     ],
     links: [
       {

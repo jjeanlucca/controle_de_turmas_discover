@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TurmasRouteImport } from './routes/turmas'
 import { Route as TarefasRouteImport } from './routes/tarefas'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RelatoriosRouteImport } from './routes/relatorios'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TurmasTurmaIdRouteImport } from './routes/turmas.$turmaId'
@@ -25,6 +28,21 @@ const TurmasRoute = TurmasRouteImport.update({
 const TarefasRoute = TarefasRouteImport.update({
   id: '/tarefas',
   path: '/tarefas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RelatoriosRoute = RelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BibliotecaRoute = BibliotecaRouteImport.update({
@@ -57,6 +75,9 @@ const BibliotecaCourseIdModuleIdLessonIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tarefas': typeof TarefasRoute
   '/turmas': typeof TurmasRouteWithChildren
   '/biblioteca/$courseId': typeof BibliotecaCourseIdRouteWithChildren
@@ -66,6 +87,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tarefas': typeof TarefasRoute
   '/turmas': typeof TurmasRouteWithChildren
   '/biblioteca/$courseId': typeof BibliotecaCourseIdRouteWithChildren
@@ -76,6 +100,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tarefas': typeof TarefasRoute
   '/turmas': typeof TurmasRouteWithChildren
   '/biblioteca/$courseId': typeof BibliotecaCourseIdRouteWithChildren
@@ -87,6 +114,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/biblioteca'
+    | '/configuracoes'
+    | '/relatorios'
+    | '/sitemap.xml'
     | '/tarefas'
     | '/turmas'
     | '/biblioteca/$courseId'
@@ -96,6 +126,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/biblioteca'
+    | '/configuracoes'
+    | '/relatorios'
+    | '/sitemap.xml'
     | '/tarefas'
     | '/turmas'
     | '/biblioteca/$courseId'
@@ -105,6 +138,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/biblioteca'
+    | '/configuracoes'
+    | '/relatorios'
+    | '/sitemap.xml'
     | '/tarefas'
     | '/turmas'
     | '/biblioteca/$courseId'
@@ -115,6 +151,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BibliotecaRoute: typeof BibliotecaRouteWithChildren
+  ConfiguracoesRoute: typeof ConfiguracoesRoute
+  RelatoriosRoute: typeof RelatoriosRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TarefasRoute: typeof TarefasRoute
   TurmasRoute: typeof TurmasRouteWithChildren
 }
@@ -133,6 +172,27 @@ declare module '@tanstack/react-router' {
       path: '/tarefas'
       fullPath: '/tarefas'
       preLoaderRoute: typeof TarefasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/relatorios': {
+      id: '/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof RelatoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/biblioteca': {
@@ -211,6 +271,9 @@ const TurmasRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BibliotecaRoute: BibliotecaRouteWithChildren,
+  ConfiguracoesRoute: ConfiguracoesRoute,
+  RelatoriosRoute: RelatoriosRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TarefasRoute: TarefasRoute,
   TurmasRoute: TurmasRouteWithChildren,
 }

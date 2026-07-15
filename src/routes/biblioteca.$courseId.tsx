@@ -3,7 +3,7 @@ import { ChevronRight, Layers, BookOpen } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { findCourse } from "@/lib/mock-data";
+import { findCourse, type CourseModule, type Lesson } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/biblioteca/$courseId")({
   loader: ({ params }) => {
@@ -39,7 +39,7 @@ function CoursePage() {
       </header>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {course.modules.map((m) => (
+        {course.modules.map((m: CourseModule) => (
           <Card key={m.id} className="rounded-2xl border-border/60 p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -55,7 +55,7 @@ function CoursePage() {
               </div>
             </div>
             <ul className="mt-4 divide-y divide-border/60 rounded-xl border border-border/60">
-              {m.lessons.map((l) => (
+              {m.lessons.map((l: Lesson) => (
                 <li key={l.id}>
                   <Link
                     to="/biblioteca/$courseId/$moduleId/$lessonId"

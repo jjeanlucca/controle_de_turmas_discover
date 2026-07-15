@@ -9,38 +9,87 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BibliotecaCourseIdRouteImport } from './routes/biblioteca.$courseId'
+import { Route as BibliotecaCourseIdModuleIdLessonIdRouteImport } from './routes/biblioteca.$courseId.$moduleId.$lessonId'
 
+const BibliotecaRoute = BibliotecaRouteImport.update({
+  id: '/biblioteca',
+  path: '/biblioteca',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BibliotecaCourseIdRoute = BibliotecaCourseIdRouteImport.update({
+  id: '/$courseId',
+  path: '/$courseId',
+  getParentRoute: () => BibliotecaRoute,
+} as any)
+const BibliotecaCourseIdModuleIdLessonIdRoute =
+  BibliotecaCourseIdModuleIdLessonIdRouteImport.update({
+    id: '/$moduleId/$lessonId',
+    path: '/$moduleId/$lessonId',
+    getParentRoute: () => BibliotecaCourseIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/biblioteca/$courseId': typeof BibliotecaCourseIdRouteWithChildren
+  '/biblioteca/$courseId/$moduleId/$lessonId': typeof BibliotecaCourseIdModuleIdLessonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/biblioteca/$courseId': typeof BibliotecaCourseIdRouteWithChildren
+  '/biblioteca/$courseId/$moduleId/$lessonId': typeof BibliotecaCourseIdModuleIdLessonIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/biblioteca/$courseId': typeof BibliotecaCourseIdRouteWithChildren
+  '/biblioteca/$courseId/$moduleId/$lessonId': typeof BibliotecaCourseIdModuleIdLessonIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/biblioteca'
+    | '/biblioteca/$courseId'
+    | '/biblioteca/$courseId/$moduleId/$lessonId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/biblioteca'
+    | '/biblioteca/$courseId'
+    | '/biblioteca/$courseId/$moduleId/$lessonId'
+  id:
+    | '__root__'
+    | '/'
+    | '/biblioteca'
+    | '/biblioteca/$courseId'
+    | '/biblioteca/$courseId/$moduleId/$lessonId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BibliotecaRoute: typeof BibliotecaRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/biblioteca': {
+      id: '/biblioteca'
+      path: '/biblioteca'
+      fullPath: '/biblioteca'
+      preLoaderRoute: typeof BibliotecaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +97,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/biblioteca/$courseId': {
+      id: '/biblioteca/$courseId'
+      path: '/$courseId'
+      fullPath: '/biblioteca/$courseId'
+      preLoaderRoute: typeof BibliotecaCourseIdRouteImport
+      parentRoute: typeof BibliotecaRoute
+    }
+    '/biblioteca/$courseId/$moduleId/$lessonId': {
+      id: '/biblioteca/$courseId/$moduleId/$lessonId'
+      path: '/$moduleId/$lessonId'
+      fullPath: '/biblioteca/$courseId/$moduleId/$lessonId'
+      preLoaderRoute: typeof BibliotecaCourseIdModuleIdLessonIdRouteImport
+      parentRoute: typeof BibliotecaCourseIdRoute
+    }
   }
 }
 
+interface BibliotecaCourseIdRouteChildren {
+  BibliotecaCourseIdModuleIdLessonIdRoute: typeof BibliotecaCourseIdModuleIdLessonIdRoute
+}
+
+const BibliotecaCourseIdRouteChildren: BibliotecaCourseIdRouteChildren = {
+  BibliotecaCourseIdModuleIdLessonIdRoute:
+    BibliotecaCourseIdModuleIdLessonIdRoute,
+}
+
+const BibliotecaCourseIdRouteWithChildren =
+  BibliotecaCourseIdRoute._addFileChildren(BibliotecaCourseIdRouteChildren)
+
+interface BibliotecaRouteChildren {
+  BibliotecaCourseIdRoute: typeof BibliotecaCourseIdRouteWithChildren
+}
+
+const BibliotecaRouteChildren: BibliotecaRouteChildren = {
+  BibliotecaCourseIdRoute: BibliotecaCourseIdRouteWithChildren,
+}
+
+const BibliotecaRouteWithChildren = BibliotecaRoute._addFileChildren(
+  BibliotecaRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BibliotecaRoute: BibliotecaRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

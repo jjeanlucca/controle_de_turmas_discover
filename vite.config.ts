@@ -1,16 +1,16 @@
-import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  tanstackStart: {
-    server: { entry: "server" },
-  },
-  // Forçamos o plugin a olhar para a pasta routes
-  vite: {
-    plugins: [], // O plugin do lovable já cuida disso, mas vamos garantir o alias
-    resolve: {
-      alias: {
-        "@": "/src",
-      },
-    },
-  },
+  plugins: [
+    // Este é o plugin que gera o routeTree.gen.ts automaticamente
+    TanStackRouterVite({
+      routesDirectory: "./src/routes",
+      generatedRouteTree: "./src/routeTree.gen.ts",
+    }),
+    react(),
+    tsconfigPaths(), // Resolve os aliases como "@/" automaticamente
+  ],
 });

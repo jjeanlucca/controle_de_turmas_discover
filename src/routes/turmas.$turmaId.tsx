@@ -85,14 +85,14 @@ function TurmaPage() {
 
       <Tabs value={activeMod} onValueChange={setActiveMod}>
         <TabsList className="mb-4 flex h-auto w-full flex-wrap justify-start gap-1 rounded-xl bg-muted/60 p-1">
-          {course.modules.map((m) => (
+          {course.modules.map((m: CourseModule) => (
             <TabsTrigger key={m.id} value={m.id} className="rounded-lg data-[state=active]:bg-background">
               {m.title}
             </TabsTrigger>
           ))}
         </TabsList>
 
-        {course.modules.map((m) => (
+        {course.modules.map((m: CourseModule) => (
           <TabsContent key={m.id} value={m.id} className="mt-0">
             <ModuleTable turmaId={turma.id} alunos={turma.alunos} module={m} tarefas={tarefas} />
           </TabsContent>

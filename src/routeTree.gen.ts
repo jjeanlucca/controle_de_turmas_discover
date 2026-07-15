@@ -9,11 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TurmasRouteImport } from './routes/turmas'
+import { Route as TarefasRouteImport } from './routes/tarefas'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TurmasTurmaIdRouteImport } from './routes/turmas.$turmaId'
 import { Route as BibliotecaCourseIdRouteImport } from './routes/biblioteca.$courseId'
 import { Route as BibliotecaCourseIdModuleIdLessonIdRouteImport } from './routes/biblioteca.$courseId.$moduleId.$lessonId'
 
+const TurmasRoute = TurmasRouteImport.update({
+  id: '/turmas',
+  path: '/turmas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TarefasRoute = TarefasRouteImport.update({
+  id: '/tarefas',
+  path: '/tarefas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BibliotecaRoute = BibliotecaRouteImport.update({
   id: '/biblioteca',
   path: '/biblioteca',
@@ -23,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const TurmasTurmaIdRoute = TurmasTurmaIdRouteImport.update({
+  id: '/$turmaId',
+  path: '/$turmaId',
+  getParentRoute: () => TurmasRoute,
 } as any)
 const BibliotecaCourseIdRoute = BibliotecaCourseIdRouteImport.update({
   id: '/$courseId',
@@ -39,20 +57,29 @@ const BibliotecaCourseIdModuleIdLessonIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/tarefas': typeof TarefasRoute
+  '/turmas': typeof TurmasRouteWithChildren
   '/biblioteca/$courseId': typeof BibliotecaCourseIdRouteWithChildren
+  '/turmas/$turmaId': typeof TurmasTurmaIdRoute
   '/biblioteca/$courseId/$moduleId/$lessonId': typeof BibliotecaCourseIdModuleIdLessonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/tarefas': typeof TarefasRoute
+  '/turmas': typeof TurmasRouteWithChildren
   '/biblioteca/$courseId': typeof BibliotecaCourseIdRouteWithChildren
+  '/turmas/$turmaId': typeof TurmasTurmaIdRoute
   '/biblioteca/$courseId/$moduleId/$lessonId': typeof BibliotecaCourseIdModuleIdLessonIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/tarefas': typeof TarefasRoute
+  '/turmas': typeof TurmasRouteWithChildren
   '/biblioteca/$courseId': typeof BibliotecaCourseIdRouteWithChildren
+  '/turmas/$turmaId': typeof TurmasTurmaIdRoute
   '/biblioteca/$courseId/$moduleId/$lessonId': typeof BibliotecaCourseIdModuleIdLessonIdRoute
 }
 export interface FileRouteTypes {
@@ -60,29 +87,54 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/biblioteca'
+    | '/tarefas'
+    | '/turmas'
     | '/biblioteca/$courseId'
+    | '/turmas/$turmaId'
     | '/biblioteca/$courseId/$moduleId/$lessonId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/biblioteca'
+    | '/tarefas'
+    | '/turmas'
     | '/biblioteca/$courseId'
+    | '/turmas/$turmaId'
     | '/biblioteca/$courseId/$moduleId/$lessonId'
   id:
     | '__root__'
     | '/'
     | '/biblioteca'
+    | '/tarefas'
+    | '/turmas'
     | '/biblioteca/$courseId'
+    | '/turmas/$turmaId'
     | '/biblioteca/$courseId/$moduleId/$lessonId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BibliotecaRoute: typeof BibliotecaRouteWithChildren
+  TarefasRoute: typeof TarefasRoute
+  TurmasRoute: typeof TurmasRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/turmas': {
+      id: '/turmas'
+      path: '/turmas'
+      fullPath: '/turmas'
+      preLoaderRoute: typeof TurmasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tarefas': {
+      id: '/tarefas'
+      path: '/tarefas'
+      fullPath: '/tarefas'
+      preLoaderRoute: typeof TarefasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/biblioteca': {
       id: '/biblioteca'
       path: '/biblioteca'
@@ -96,6 +148,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/turmas/$turmaId': {
+      id: '/turmas/$turmaId'
+      path: '/$turmaId'
+      fullPath: '/turmas/$turmaId'
+      preLoaderRoute: typeof TurmasTurmaIdRouteImport
+      parentRoute: typeof TurmasRoute
     }
     '/biblioteca/$courseId': {
       id: '/biblioteca/$courseId'
@@ -138,9 +197,22 @@ const BibliotecaRouteWithChildren = BibliotecaRoute._addFileChildren(
   BibliotecaRouteChildren,
 )
 
+interface TurmasRouteChildren {
+  TurmasTurmaIdRoute: typeof TurmasTurmaIdRoute
+}
+
+const TurmasRouteChildren: TurmasRouteChildren = {
+  TurmasTurmaIdRoute: TurmasTurmaIdRoute,
+}
+
+const TurmasRouteWithChildren =
+  TurmasRoute._addFileChildren(TurmasRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BibliotecaRoute: BibliotecaRouteWithChildren,
+  TarefasRoute: TarefasRoute,
+  TurmasRoute: TurmasRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

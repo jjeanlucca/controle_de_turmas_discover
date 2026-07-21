@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = 'https://aiylivwvzewrcrdogkio.supabase.co';
+const supabaseAnonKey = 'sb_publishable_VCwI8TCDepgnO0uEM_AZzw_8Stl-4Jh';
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error("Credenciais do Supabase não configuradas no .env");

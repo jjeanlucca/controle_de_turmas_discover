@@ -6,7 +6,7 @@ import './styles.css'
 
 const router = createRouter({ routeTree })
 
-// Registre o roteador para ter tipagem 100% segura em todo o projeto
+
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router

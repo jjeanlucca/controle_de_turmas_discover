@@ -2,315 +2,377 @@ import { createLazyFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { supabase } from '../lib/supabase'
-import { BookOpen, FileText, Plus, Trash2, Search, X } from 'lucide-react'
+import { BookOpen, Plus, Trash2, Edit2, Search, X, ExternalLink, Layers, Gamepad2, Share2, FileText } from 'lucide-react'
 
-// Path cast to any to satisfy route-typing in this project setup
 export const Route = createLazyFileRoute('/biblioteca' as any)({
   component: BibliotecaPage,
 })
 
-interface PlanoAula {
+interface Conteudo {
   id: string
-  titulo: string
-  descricao?: string
-  created_at?: string
-}
-
-interface Material {
-  id: string
-  titulo: string
-  tipo?: string
-  link?: string
-  created_at?: string
+  modulo: string
+  materia: string
+  numero_aula: number
+  nome_aula: string
+  link_livro?: string
+  link_jogo?: string
+  tarefa_casa?: string
 }
 
 function BibliotecaPage() {
-  const [activeTab, setActiveTab] = useState<'planos' | 'materiais'>('planos')
-  const [planos, setPlanos] = useState<PlanoAula[]>([])
-  const [materiais, setMateriais] = useState<Material[]>([])
+  const [conteudos, setConteudos] = useState<Conteudo[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
 
-  // Estados do formulário de Plano de Aula
-  const [tituloPlano, setTituloPlano] = useState('')
-  const [descricaoPlano, setDescricaoPlano] = useState('')
+  // Estados do Formulário
+  const [modulo, setModulo] = useState('')
+  const [materia, setMateria] = useState('')
+  const [numeroAula, setNumeroAula] = useState<number | ''>('')
+  const [nomeAula, setNomeAula] = useState('')
+  const [linkLivro, setLinkLivro] = useState('')
+  const [linkJogo, setLinkJogo] = useState('')
+  const [tarefaCasa, setTarefaCasa] = useState('')
 
-  // Estados do formulário de Material
-  const [tituloMaterial, setTituloMaterial] = useState('')
-  const [tipoMaterial, setTipoMaterial] = useState('PDF')
-  const [linkMaterial, setLinkMaterial] = useState('')
-
-  const fetchData = async () => {
+  const fetchConteudos = async () => {
     setLoading(true)
-    const { data: planosData } = await supabase.from('planos_aula').select('*').order('titulo', { ascending: true })
-    const { data: materiaisData } = await supabase.from('materiais').select('*').order('titulo', { ascending: true })
-    
-    setPlanos(planosData || [])
-    setMateriais(materiaisData || [])
+    const { data, error } = await supabase
+      .from('biblioteca_conteudos')
+      .select('*')
+      .order('modulo', { ascending: true })
+      .order('materia', { ascending: true })
+      .order('numero_aula', { ascending: true })
+
+    if (error) {
+      console.error('Erro ao buscar biblioteca:', error.message)
+    } else {
+      setConteudos(data || [])
+    }
     setLoading(false)
   }
 
   useEffect(() => {
-    fetchData()
+    fetchConteudos()
   }, [])
 
-  // Cadastrar Plano de Aula
-  const handleCreatePlano = async (e: React.FormEvent) => {
+  // Salvar (Create ou Update)
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!tituloPlano.trim()) return
+    if (!modulo.trim() || !materia.trim() || !nomeAula.trim() || numeroAula === '') return
 
-    const { error } = await supabase.from('planos_aula').insert([{ titulo: tituloPlano, descricao: descricaoPlano }])
-    if (error) {
-      alert('Erro ao salvar plano de aula: ' + error.message)
+    const payload = {
+      modulo,
+      materia,
+      numero_aula: Number(numeroAula),
+      nome_aula: nomeAula,
+      link_livro: linkLivro,
+      link_jogo: linkJogo,
+      tarefa_casa: tarefaCasa,
+    }
+
+    if (editingId) {
+      const { error } = await supabase
+        .from('biblioteca_conteudos')
+        .update(payload)
+        .eq('id', editingId)
+
+      if (error) alert('Erro ao atualizar: ' + error.message)
+      else {
+        closeModal()
+        fetchConteudos()
+      }
     } else {
-      setTituloPlano('')
-      setDescricaoPlano('')
-      setIsModalOpen(false)
-      fetchData()
+      const { error } = await supabase
+        .from('biblioteca_conteudos')
+        .insert([payload])
+
+      if (error) alert('Erro ao cadastrar: ' + error.message)
+      else {
+        closeModal()
+        fetchConteudos()
+      }
     }
   }
 
-  // Cadastrar Material
-  const handleCreateMaterial = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!tituloMaterial.trim()) return
-
-    const { error } = await supabase.from('materiais').insert([{ titulo: tituloMaterial, tipo: tipoMaterial, link: linkMaterial }])
-    if (error) {
-      alert('Erro ao salvar material: ' + error.message)
-    } else {
-      setTituloMaterial('')
-      setTipoMaterial('PDF')
-      setLinkMaterial('')
-      setIsModalOpen(false)
-      fetchData()
-    }
+  const handleEdit = (item: Conteudo) => {
+    setEditingId(item.id)
+    setModulo(item.modulo)
+    setMateria(item.materia)
+    setNumeroAula(item.numero_aula)
+    setNomeAula(item.nome_aula)
+    setLinkLivro(item.link_livro || '')
+    setLinkJogo(item.link_jogo || '')
+    setTarefaCasa(item.tarefa_casa || '')
+    setIsModalOpen(true)
   }
 
-  // Deletar Plano de Aula
-  const handleDeletePlano = async (id: string) => {
-    if (!confirm('Deseja excluir este plano de aula?')) return
-    const { error } = await supabase.from('planos_aula').delete().eq('id', id)
+  const handleDelete = async (id: string) => {
+    if (!confirm('Deseja excluir este conteúdo da biblioteca?')) return
+    const { error } = await supabase.from('biblioteca_conteudos').delete().eq('id', id)
     if (error) alert('Erro ao excluir: ' + error.message)
-    else setPlanos(planos.filter(p => p.id !== id))
+    else setConteudos(conteudos.filter((c) => c.id !== id))
   }
 
-  // Deletar Material
-  const handleDeleteMaterial = async (id: string) => {
-    if (!confirm('Deseja excluir este material?')) return
-    const { error } = await supabase.from('materiais').delete().eq('id', id)
-    if (error) alert('Erro ao excluir: ' + error.message)
-    else setMateriais(materiais.filter(m => m.id !== id))
+  // 📲 Função mágica para disparar mensagem pronta no WhatsApp
+  const handleShareWhatsApp = (item: Conteudo) => {
+    const mensagem = encodeURIComponent(
+      `📚 *Escola Discover - Conteúdo da Aula*\n\n` +
+      `📦 *Módulo:* ${item.modulo}\n` +
+      `💻 *Matéria:* ${item.materia} - *Aula ${item.numero_aula}:* ${item.nome_aula}\n\n` +
+      (item.link_livro ? `📖 *Livro Digital:* ${item.link_livro}\n` : '') +
+      (item.link_jogo ? `🎮 *Jogo Interativo:* ${item.link_jogo}\n` : '') +
+      (item.tarefa_casa ? `📝 *Dever de Casa:* ${item.tarefa_casa}\n` : '') +
+      `\n_Bons estudos! Dúvidas, mandem aqui no grupo._`
+    )
+    window.open(`https://api.whatsapp.com/send?text=${mensagem}`, '_blank')
   }
 
-  const filteredPlanos = planos.filter(p => p.titulo.toLowerCase().includes(searchTerm.toLowerCase()))
-  const filteredMateriais = materiais.filter(m => m.titulo.toLowerCase().includes(searchTerm.toLowerCase()))
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setEditingId(null)
+    setModulo('')
+    setMateria('')
+    setNumeroAula('')
+    setNomeAula('')
+    setLinkLivro('')
+    setLinkJogo('')
+    setTarefaCasa('')
+  }
+
+  const filteredConteudos = conteudos.filter(
+    (c) =>
+      c.nome_aula.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.materia.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.modulo.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       {/* Cabeçalho */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Biblioteca & Planejamento</h1>
-          <p className="text-gray-500 mt-1">Gerencie planos de aula e materiais didáticos da Escola Discover.</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Biblioteca de Conteúdo & Aulas</h1>
+          <p className="text-gray-500 mt-1">Gerencie a trilha pedagógica, livros digitais, jogos e envie links direto no WhatsApp.</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
         >
           <Plus className="w-5 h-5" />
-          {activeTab === 'planos' ? 'Novo Plano de Aula' : 'Novo Material'}
+          Novo Conteúdo
         </button>
       </div>
 
-      {/* Abas e Barra de Pesquisa */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div className="flex bg-gray-100 p-1 rounded-xl w-full sm:w-auto">
-          <button
-            onClick={() => setActiveTab('planos')}
-            className={`flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-medium transition-all ${
-              activeTab === 'planos' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-900'
-            }`}
-          >
-            Planos de Aula ({planos.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('materiais')}
-            className={`flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-medium transition-all ${
-              activeTab === 'materiais' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-900'
-            }`}
-          >
-            Materiais Didáticos ({materiais.length})
-          </button>
-        </div>
-
-        <div className="flex items-center bg-white border border-gray-200 rounded-xl px-4 py-2 shadow-sm w-full sm:w-80">
-          <Search className="w-4 h-4 text-gray-400 mr-3" />
-          <input
-            type="text"
-            placeholder="Buscar por título..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-transparent outline-none text-gray-700 text-sm placeholder-gray-400"
-          />
-        </div>
+      {/* Pesquisa */}
+      <div className="flex items-center bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm max-w-md">
+        <Search className="w-5 h-5 text-gray-400 mr-3" />
+        <input
+          type="text"
+          placeholder="Buscar por módulo, matéria ou aula..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
+        />
       </div>
 
-      {/* Listagem baseada na aba ativa */}
+      {/* Listagem */}
       {loading ? (
         <div className="text-center py-12 text-gray-500">Carregando biblioteca...</div>
-      ) : activeTab === 'planos' ? (
-        filteredPlanos.length === 0 ? (
-          <div className="bg-white border border-dashed border-gray-300 rounded-2xl p-12 text-center space-y-3">
-            <BookOpen className="w-12 h-12 text-gray-300 mx-auto" />
-            <h3 className="text-lg font-semibold text-gray-700">Nenhum plano de aula cadastrado</h3>
-            <p className="text-gray-400 text-sm">Crie seu primeiro planejamento pedagógico.</p>
-          </div>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredPlanos.map((plano) => (
-              <div key={plano.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-semibold">
-                      <BookOpen className="w-3.5 h-3.5" /> Plano de Aula
-                    </span>
-                    <button
-                      onClick={() => handleDeletePlano(plano.id)}
-                      className="text-gray-400 hover:text-red-500 p-1 rounded-lg transition-colors"
-                      title="Excluir"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900">{plano.titulo}</h3>
-                  <p className="text-sm text-gray-500 line-clamp-3">{plano.descricao || 'Sem descrição detalhada.'}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )
+      ) : filteredConteudos.length === 0 ? (
+        <div className="bg-white border border-dashed border-gray-300 rounded-2xl p-12 text-center space-y-3">
+          <BookOpen className="w-12 h-12 text-gray-300 mx-auto" />
+          <h3 className="text-lg font-semibold text-gray-700">Nenhum conteúdo cadastrado</h3>
+          <p className="text-gray-400 text-sm">Adicione sua primeira aula clicando no botão acima.</p>
+        </div>
       ) : (
-        filteredMateriais.length === 0 ? (
-          <div className="bg-white border border-dashed border-gray-300 rounded-2xl p-12 text-center space-y-3">
-            <FileText className="w-12 h-12 text-gray-300 mx-auto" />
-            <h3 className="text-lg font-semibold text-gray-700">Nenhum material cadastrado</h3>
-            <p className="text-gray-400 text-sm">Adicione apostilas, slides ou links úteis.</p>
-          </div>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredMateriais.map((mat) => (
-              <div key={mat.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-semibold">
-                      <FileText className="w-3.5 h-3.5" /> {mat.tipo || 'Arquivo'}
-                    </span>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredConteudos.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow flex flex-col justify-between space-y-5"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-semibold">
+                    <Layers className="w-3.5 h-3.5" /> {item.modulo}
+                  </span>
+                  <div className="flex items-center gap-1">
                     <button
-                      onClick={() => handleDeleteMaterial(mat.id)}
-                      className="text-gray-400 hover:text-red-500 p-1 rounded-lg transition-colors"
+                      onClick={() => handleEdit(item)}
+                      className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                      title="Editar"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                       title="Excluir"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900">{mat.titulo}</h3>
-                  {mat.link && (
-                    <a href={mat.link} target="_blank" rel="noreferrer" className="text-xs text-emerald-600 hover:underline block truncate">
-                      Acessar link →
+                </div>
+
+                <div>
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{item.materia}</span>
+                  <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2 mt-1">
+                    <span className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-extrabold">
+                      {item.numero_aula}
+                    </span>
+                    {item.nome_aula}
+                  </h3>
+                </div>
+
+                {item.tarefa_casa && (
+                  <p className="text-xs text-gray-500 bg-gray-50 p-3 rounded-xl border border-gray-100 line-clamp-2">
+                    <span className="font-semibold text-gray-700">Dever:</span> {item.tarefa_casa}
+                  </p>
+                )}
+              </div>
+
+              {/* Links e Botão WhatsApp */}
+              <div className="pt-4 border-t space-y-2">
+                <div className="flex items-center gap-3 text-xs">
+                  {item.link_livro && (
+                    <a href={item.link_livro} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-emerald-600 hover:underline font-medium">
+                      <BookOpen className="w-3.5 h-3.5" /> Livro
+                    </a>
+                  )}
+                  {item.link_jogo && (
+                    <a href={item.link_jogo} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-blue-600 hover:underline font-medium">
+                      <Gamepad2 className="w-3.5 h-3.5" /> Jogo
                     </a>
                   )}
                 </div>
+
+                <button
+                  onClick={() => handleShareWhatsApp(item)}
+                  className="w-full mt-2 flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-4 py-2.5 rounded-xl font-semibold text-xs transition-colors border border-emerald-200"
+                >
+                  <Share2 className="w-4 h-4 text-emerald-600" />
+                  Compartilhar no WhatsApp
+                </button>
               </div>
-            ))}
-          </div>
-        )
+            </div>
+          ))}
+        </div>
       )}
 
-      {/* Modal Dinâmico de Cadastro */}
+      {/* Modal de Cadastro / Edição */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-6 relative animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 space-y-6 relative max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b pb-4">
               <h2 className="text-xl font-bold text-gray-900">
-                {activeTab === 'planos' ? 'Novo Plano de Aula' : 'Novo Material Didático'}
+                {editingId ? 'Editar Aula da Biblioteca' : 'Cadastrar Nova Aula'}
               </h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg">
+              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {activeTab === 'planos' ? (
-              <form onSubmit={handleCreatePlano} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Título do Plano *</label>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Módulo / Livro *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Módulo 1 - Informática Fundamental"
+                  value={modulo}
+                  onChange={(e) => setModulo(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Matéria / Software *</label>
                   <input
                     type="text"
                     required
-                    placeholder="Ex: Introdução ao HTML5 e Semântica"
-                    value={tituloPlano}
-                    onChange={(e) => setTituloPlano(e.target.value)}
+                    placeholder="Ex: Excel, Word..."
+                    value={materia}
+                    onChange={(e) => setMateria(e.target.value)}
                     className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Descrição / Metodologia</label>
-                  <textarea
-                    rows={3}
-                    placeholder="Descreva os objetivos e etapas..."
-                    value={descricaoPlano}
-                    onChange={(e) => setDescricaoPlano(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
-                  />
-                </div>
-                <div className="flex justify-end gap-3 pt-4 border-t">
-                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl">Cancelar</button>
-                  <button type="submit" className="px-5 py-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm">Salvar Plano</button>
-                </div>
-              </form>
-            ) : (
-              <form onSubmit={handleCreateMaterial} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Título do Material *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nº Aula *</label>
                   <input
-                    type="text"
+                    type="number"
                     required
-                    placeholder="Ex: Apostila de CSS Grid"
-                    value={tituloMaterial}
-                    onChange={(e) => setTituloMaterial(e.target.value)}
+                    min={1}
+                    placeholder="Ex: 3"
+                    value={numeroAula}
+                    onChange={(e) => setNumeroAula(e.target.value === '' ? '' : Number(e.target.value))}
                     className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Material</label>
-                  <select
-                    value={tipoMaterial}
-                    onChange={(e) => setTipoMaterial(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white"
-                  >
-                    <option value="PDF">PDF</option>
-                    <option value="Slides">Slides</option>
-                    <option value="Vídeo">Vídeo</option>
-                    <option value="Link Útil">Link Útil</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Link ou URL</label>
-                  <input
-                    type="text"
-                    placeholder="https://..."
-                    value={linkMaterial}
-                    onChange={(e) => setLinkMaterial(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
-                  />
-                </div>
-                <div className="flex justify-end gap-3 pt-4 border-t">
-                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl">Cancelar</button>
-                  <button type="submit" className="px-5 py-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm">Salvar Material</button>
-                </div>
-              </form>
-            )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nome da Aula *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Fórmulas Básicas e SOMA"
+                  value={nomeAula}
+                  onChange={(e) => setNomeAula(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Link do Livro Digital (URL)</label>
+                <input
+                  type="text"
+                  placeholder="https://discover.app/livro/..."
+                  value={linkLivro}
+                  onChange={(e) => setLinkLivro(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Link do Jogo / Interatividade (URL)</label>
+                <input
+                  type="text"
+                  placeholder="https://discover.app/jogos/..."
+                  value={linkJogo}
+                  onChange={(e) => setLinkJogo(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Dever de Casa / Instruções</label>
+                <textarea
+                  rows={2}
+                  placeholder="O que o aluno deve fazer..."
+                  value={tarefaCasa}
+                  onChange={(e) => setTarefaCasa(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm transition-all"
+                >
+                  {editingId ? 'Salvar Alterações' : 'Salvar Conteúdo'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

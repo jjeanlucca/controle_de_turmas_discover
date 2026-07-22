@@ -1,16 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-import { fileURLToPath, URL } from 'node:url'
+// 1. Altere a importação para o novo nome padrão
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 
 export default defineConfig({
   plugins: [
-    TanStackRouterVite(),
+    // 2. Substitua a chamada antiga pelo novo nome
+    tanstackRouter({
+      target: 'react',
+      autoCodeSplitting: true,
+    }),
     react(),
   ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
 })

@@ -9,6 +9,7 @@ import {
   GraduationCap,
 } from "lucide-react";
 
+// Trocamos o @/ por ./ para o Vite não dar erro de caminho
 import {
   Sidebar,
   SidebarContent,
@@ -20,7 +21,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
-} from "@/components/ui/sidebar";
+} from "./ui/sidebar";
 
 const nav = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -38,26 +39,29 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border">
+      
+      <SidebarHeader className="border-b border-slate-200">
         <div className="flex items-center gap-3 px-2 py-3">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-600 text-white shadow-sm">
             <GraduationCap className="h-5 w-5" />
           </div>
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-            <p className="truncate text-sm font-semibold leading-none">Discover</p>
-            <p className="truncate text-xs text-muted-foreground mt-1">
+            <p className="truncate text-sm font-semibold leading-none text-slate-900">
+              Discover
+            </p>
+            <p className="truncate text-xs text-slate-500 mt-1">
               Escola de Tecnologia
             </p>
           </div>
         </div>
       </SidebarHeader>
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Navegação</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {nav.map((item) => {
-                // Extraímos o componente do ícone com letra MAIÚSCULA para o React entender perfeitamente
                 const Icon = item.icon;
                 
                 return (
@@ -79,19 +83,23 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border">
+
+      <SidebarFooter className="border-t border-slate-200">
         <div className="flex items-center gap-3 px-2 py-2">
-          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-foreground/80 text-xs font-semibold">
+          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
             MA
           </div>
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-            <p className="truncate text-sm font-medium leading-none">Prof. Marcos</p>
-            <p className="truncate text-xs text-muted-foreground mt-1">
+            <p className="truncate text-sm font-medium leading-none text-slate-900">
+              Prof. Marcos
+            </p>
+            <p className="truncate text-xs text-slate-500 mt-1">
               Ano letivo 2026
             </p>
           </div>
         </div>
       </SidebarFooter>
+      
     </Sidebar>
   );
 }

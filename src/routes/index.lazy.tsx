@@ -1,10 +1,10 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
 
-export const Route = createLazyFileRoute('/')({
-  component: DashboardPage,
+export const Route = createLazyFileRoute('/' as any)({
+  component: IndexPage, // ou o nome do seu componente atual
 })
 
-function DashboardPage() {
+function IndexPage() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold text-gray-800">Dashboard Principal</h1>

@@ -2,9 +2,9 @@ import { createLazyFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { supabase } from '../lib/supabase'
-import { UserPlus, Trash2, Search, User, Layers, X } from 'lucide-react'
+import { UserPlus, Trash2, Edit2, Search, User, Layers, X } from 'lucide-react'
 
-export const Route = createLazyFileRoute('/alunos')({
+export const Route = createLazyFileRoute('/alunos' as any)({
   component: AlunosPage,
 })
 
@@ -26,6 +26,7 @@ function AlunosPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
   
   const [nome, setNome] = useState('')
   const [turmaId, setTurmaId] = useState('')
@@ -55,25 +56,47 @@ function AlunosPage() {
     fetchData()
   }, [])
 
-  const handleCreateAluno = async (e: React.FormEvent) => {
+  // Salvar (Criar ou Atualizar)
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!nome.trim()) return
 
     const payload: any = { nome }
-    if (turmaId) payload.turma_id = turmaId
+    payload.turma_id = turmaId ? turmaId : null
 
-    const { error } = await supabase
-      .from('alunos')
-      .insert([payload])
+    if (editingId) {
+      // Atualizar (Update)
+      const { error } = await supabase
+        .from('alunos')
+        .update(payload)
+        .eq('id', editingId)
 
-    if (error) {
-      alert('Erro ao cadastrar aluno: ' + error.message)
+      if (error) {
+        alert('Erro ao atualizar aluno: ' + error.message)
+      } else {
+        closeModal()
+        fetchData()
+      }
     } else {
-      setNome('')
-      setTurmaId('')
-      setIsModalOpen(false)
-      fetchData()
+      // Criar (Create)
+      const { error } = await supabase
+        .from('alunos')
+        .insert([payload])
+
+      if (error) {
+        alert('Erro ao cadastrar aluno: ' + error.message)
+      } else {
+        closeModal()
+        fetchData()
+      }
     }
+  }
+
+  const handleEdit = (aluno: Aluno) => {
+    setEditingId(aluno.id)
+    setNome(aluno.nome)
+    setTurmaId(aluno.turma_id || '')
+    setIsModalOpen(true)
   }
 
   const handleDeleteAluno = async (id: string) => {
@@ -89,6 +112,13 @@ function AlunosPage() {
     } else {
       setAlunos(alunos.filter((aluno) => aluno.id !== id))
     }
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setEditingId(null)
+    setNome('')
+    setTurmaId('')
   }
 
   const filteredAlunos = alunos.filter((aluno) =>
@@ -118,7 +148,7 @@ function AlunosPage() {
           placeholder="Buscar por nome completo..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
+          className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
         />
       </div>
 
@@ -156,13 +186,22 @@ function AlunosPage() {
                     </span>
                   </td>
                   <td className="py-4 px-6 text-right">
-                    <button
-                      onClick={() => handleDeleteAluno(aluno.id)}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Excluir Aluno"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1">
+                      <button
+                        onClick={() => handleEdit(aluno)}
+                        className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                        title="Editar Aluno"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteAluno(aluno.id)}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Excluir Aluno"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -175,16 +214,18 @@ function AlunosPage() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-6 relative animate-in fade-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center border-b pb-4">
-              <h2 className="text-xl font-bold text-gray-900">Cadastrar Novo Aluno</h2>
+              <h2 className="text-xl font-bold text-gray-900">
+                {editingId ? 'Editar Aluno' : 'Cadastrar Novo Aluno'}
+              </h2>
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={closeModal}
                 className="text-gray-400 hover:text-gray-600 p-1 rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleCreateAluno} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo *</label>
                 <input
@@ -216,7 +257,7 @@ function AlunosPage() {
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={closeModal}
                   className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
                 >
                   Cancelar
@@ -225,7 +266,7 @@ function AlunosPage() {
                   type="submit"
                   className="px-5 py-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm transition-all"
                 >
-                  Salvar Aluno
+                  {editingId ? 'Salvar Alterações' : 'Salvar Aluno'}
                 </button>
               </div>
             </form>

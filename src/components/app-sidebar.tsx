@@ -9,7 +9,7 @@ import {
   GraduationCap,
 } from "lucide-react";
 
-// Trocamos o @/ por ./ para o Vite não dar erro de caminho
+
 import {
   Sidebar,
   SidebarContent,

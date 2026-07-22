@@ -2,7 +2,7 @@ import { createLazyFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { supabase } from '../lib/supabase'
-import { BookOpen, Plus, Trash2, Edit2, Search, X, ExternalLink, Layers, Gamepad2, Share2, FileText } from 'lucide-react'
+import { BookOpen, Plus, Trash2, Edit2, Search, X, Layers, Gamepad2, Share2 } from 'lucide-react'
 
 export const Route = createLazyFileRoute('/biblioteca' as any)({
   component: BibliotecaPage,

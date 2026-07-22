@@ -4,7 +4,7 @@ import React from 'react'
 import { supabase } from '../lib/supabase'
 import { CheckSquare, ClipboardList, Plus, Trash2, Search, X, Calendar, Layers, User } from 'lucide-react'
 
-export const Route = createLazyFileRoute('/turmas')({
+export const Route = createLazyFileRoute('/tarefas' as any)({
   component: TarefasPage,
 })
 

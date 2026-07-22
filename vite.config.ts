@@ -1,15 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-// 1. Altere a importação para o novo nome padrão
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import tailwindcss from '@tailwindcss/vite'
+import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   plugins: [
-    // 2. Substitua a chamada antiga pelo novo nome
-    tanstackRouter({
-      target: 'react',
-      autoCodeSplitting: true,
-    }),
     react(),
+    tailwindcss(), // <--- ESTE PLUGIN É O QUE FAZ O TAILWIND FUNCIONAR NO VITE
   ],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
 })

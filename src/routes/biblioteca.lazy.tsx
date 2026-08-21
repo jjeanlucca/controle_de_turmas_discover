@@ -4,7 +4,7 @@ import React from 'react'
 import { supabase } from '../lib/supabase'
 import { BookOpen, Plus, Trash2, Edit2, Search, X, Layers, Gamepad2, Share2 } from 'lucide-react'
 
-export const Route = createLazyFileRoute('/biblioteca' as any)({
+export const Route = createLazyFileRoute('/biblioteca' as never)({
   component: BibliotecaPage,
 })
 

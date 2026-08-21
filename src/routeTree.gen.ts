@@ -4,7 +4,27 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRouteImport } from './routes/__root'
 
-// 1. Turmas
+const IndexLazyRouteImport = createFileRoute('/')()
+const IndexLazyRoute = IndexLazyRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const LoginLazyRouteImport = createFileRoute('/login')()
+const LoginLazyRoute = LoginLazyRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
+
+const AlunosLazyRouteImport = createFileRoute('/alunos')()
+const AlunosLazyRoute = AlunosLazyRouteImport.update({
+  id: '/alunos',
+  path: '/alunos',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/alunos.lazy').then((d) => d.Route))
+
 const TurmasLazyRouteImport = createFileRoute('/turmas')()
 const TurmasLazyRoute = TurmasLazyRouteImport.update({
   id: '/turmas',
@@ -12,7 +32,6 @@ const TurmasLazyRoute = TurmasLazyRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/turmas.lazy').then((d) => d.Route))
 
-// 2. Biblioteca
 const BibliotecaLazyRouteImport = createFileRoute('/biblioteca')()
 const BibliotecaLazyRoute = BibliotecaLazyRouteImport.update({
   id: '/biblioteca',
@@ -20,7 +39,6 @@ const BibliotecaLazyRoute = BibliotecaLazyRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/biblioteca.lazy').then((d) => d.Route))
 
-// 3. Tarefas
 const TarefasLazyRouteImport = createFileRoute('/tarefas')()
 const TarefasLazyRoute = TarefasLazyRouteImport.update({
   id: '/tarefas',
@@ -29,6 +47,9 @@ const TarefasLazyRoute = TarefasLazyRouteImport.update({
 } as any).lazy(() => import('./routes/tarefas.lazy').then((d) => d.Route))
 
 const rootRouteChildren = {
+  IndexLazyRoute: IndexLazyRoute,
+  LoginLazyRoute: LoginLazyRoute,
+  AlunosLazyRoute: AlunosLazyRoute,
   TurmasLazyRoute: TurmasLazyRoute,
   BibliotecaLazyRoute: BibliotecaLazyRoute,
   TarefasLazyRoute: TarefasLazyRoute,

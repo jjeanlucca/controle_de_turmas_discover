@@ -4,7 +4,8 @@ import React from 'react'
 import { supabase } from '../lib/supabase'
 import { Users, Layers, BookOpen, CheckSquare, ArrowUpRight, Sparkles } from 'lucide-react'
 
-export const Route = createLazyFileRoute('/' as any)({
+// Correção 1: 'as never' na rota
+export const Route = createLazyFileRoute('/' as never)({
   component: DashboardPage,
 })
 
@@ -108,8 +109,9 @@ function DashboardPage() {
       <div className="space-y-4 pt-2">
         <h2 className="text-xl font-bold text-gray-900 tracking-tight">Acesso Rápido aos Módulos</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {/* Correção 2: 'as never' nos links */}
           <Link
-            to={"/turmas" as any}
+            to={"/turmas" as never}
             className="group bg-white p-6 rounded-2xl shadow-sm border border-gray-200/80 hover:border-emerald-500 hover:shadow-md transition-all flex flex-col justify-between space-y-6"
           >
             <div className="space-y-3">
@@ -125,7 +127,7 @@ function DashboardPage() {
           </Link>
 
           <Link
-            to={"/alunos" as any}
+            to={"/alunos" as never}
             className="group bg-white p-6 rounded-2xl shadow-sm border border-gray-200/80 hover:border-blue-500 hover:shadow-md transition-all flex flex-col justify-between space-y-6"
           >
             <div className="space-y-3">
@@ -141,7 +143,7 @@ function DashboardPage() {
           </Link>
 
           <Link
-            to={"/biblioteca" as any}
+            to={"/biblioteca" as never}
             className="group bg-white p-6 rounded-2xl shadow-sm border border-gray-200/80 hover:border-purple-500 hover:shadow-md transition-all flex flex-col justify-between space-y-6"
           >
             <div className="space-y-3">

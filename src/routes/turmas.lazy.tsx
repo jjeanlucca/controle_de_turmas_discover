@@ -5,7 +5,7 @@ import { supabase } from "../lib/supabase";
 import { Plus, X, Layers, Pencil, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createLazyFileRoute("/turmas" as any)({
+export const Route = createLazyFileRoute("/turmas" as never)({
   component: TurmasPage,
 });
 

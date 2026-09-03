@@ -5,11 +5,13 @@ import {
   LayoutDashboard,
   BookOpen,
   Users,
+  User, // <-- Importamos o ícone novo
   ListChecks,
   BarChart3,
   Settings,
   GraduationCap,
   LogOut,
+  Layers
 } from "lucide-react";
 
 import {
@@ -25,10 +27,12 @@ import {
   SidebarFooter,
 } from "./ui/sidebar";
 
+// 👇 O BOTÃO DE ALUNOS FOI ADICIONADO AQUI 👇
 const nav = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Alunos", url: "/alunos", icon: User },
+  { title: "Turmas", url: "/turmas", icon: Layers },
   { title: "Biblioteca", url: "/biblioteca", icon: BookOpen },
-  { title: "Turmas", url: "/turmas", icon: Users },
   { title: "Controle de Tarefas", url: "/tarefas", icon: ListChecks },
   { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
   { title: "Configurações", url: "/configuracoes", icon: Settings },
@@ -48,13 +52,17 @@ export function AppSidebar() {
       if (!session) return;
 
       const { data } = await supabase
-        .from('perfis')
-        .select('nome, cargo, email')
+        .from('profiles') // Ajustado de perfis para profiles (como no seu banco SQL)
+        .select('nome, role, email')
         .eq('id', session.user.id)
         .single();
 
       if (data) {
-        setPerfil(data);
+        setPerfil({
+          nome: data.nome,
+          cargo: data.role,
+          email: data.email
+        });
       }
     };
 
@@ -131,16 +139,16 @@ export function AppSidebar() {
         <div className="flex items-center justify-between px-2 py-2">
           
           <div className="flex items-center gap-3 min-w-0">
-            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#eeeaff] text-emerald-700 text-xs font-bold uppercase">
+            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#eeeaff] text-[#6c47e6] text-xs font-bold uppercase">
               {perfil ? getInitiais(perfil.nome, perfil.email) : '...'}
             </div>
             
             <div className="min-w-0 group-data-[collapsible=icon]:hidden">
               <p className="truncate text-sm font-medium leading-none text-slate-900">
-                {perfil?.nome || "Configure seu Perfil"}
+                {perfil?.nome || "Carregando..."}
               </p>
               <p className="truncate text-xs text-slate-500 mt-1 capitalize">
-                {perfil?.cargo === 'admin' ? 'Administrador' : (perfil?.cargo || "Carregando...")}
+                {perfil?.cargo === 'admin' ? 'Administrador' : (perfil?.cargo || "Professor")}
               </p>
             </div>
           </div>

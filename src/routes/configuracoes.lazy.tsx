@@ -63,7 +63,7 @@ function ConfiguracoesPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#6c47e6]" />
       </div>
     )
   }
@@ -90,7 +90,7 @@ function ConfiguracoesPage() {
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
                 placeholder="Ex: Prof. Marcos Silva"
-                className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all"
+                className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] focus:border-transparent text-sm transition-all"
               />
             </div>
 
@@ -126,7 +126,7 @@ function ConfiguracoesPage() {
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-medium shadow-sm transition-all disabled:opacity-70"
+              className="flex items-center gap-2 bg-[#6c47e6] hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-medium shadow-sm transition-all disabled:opacity-70"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               {saving ? 'Salvando...' : 'Salvar Alterações'}

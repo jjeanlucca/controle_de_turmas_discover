@@ -157,7 +157,7 @@ function BibliotecaPage() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
+          className="flex items-center gap-2 bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
         >
           <Plus className="w-5 h-5" />
           Novo Conteúdo
@@ -194,13 +194,13 @@ function BibliotecaPage() {
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-semibold">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#eeeaff]merald-50 text-emerald-700 rounded-lg text-xs font-semibold">
                     <Layers className="w-3.5 h-3.5" /> {item.modulo}
                   </span>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleEdit(item)}
-                      className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                      className="p-1.5 text-gray-400 hover:text-[#6c47e6] hover:bg-[#eeeaff]merald-50 rounded-lg transition-colors"
                       title="Editar"
                     >
                       <Edit2 className="w-4 h-4" />
@@ -218,7 +218,7 @@ function BibliotecaPage() {
                 <div>
                   <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{item.materia}</span>
                   <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2 mt-1">
-                    <span className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-extrabold">
+                    <span className="w-7 h-7 rounded-lg bg-[#eeeaff]merald-100 text-emerald-800 flex items-center justify-center text-xs font-extrabold">
                       {item.numero_aula}
                     </span>
                     {item.nome_aula}
@@ -236,7 +236,7 @@ function BibliotecaPage() {
               <div className="pt-4 border-t space-y-2">
                 <div className="flex items-center gap-3 text-xs">
                   {item.link_livro && (
-                    <a href={item.link_livro} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-emerald-600 hover:underline font-medium">
+                    <a href={item.link_livro} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[#6c47e6] hover:underline font-medium">
                       <BookOpen className="w-3.5 h-3.5" /> Livro
                     </a>
                   )}
@@ -249,9 +249,9 @@ function BibliotecaPage() {
 
                 <button
                   onClick={() => handleShareWhatsApp(item)}
-                  className="w-full mt-2 flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-4 py-2.5 rounded-xl font-semibold text-xs transition-colors border border-emerald-200"
+                  className="w-full mt-2 flex items-center justify-center gap-2 bg-[#eeeaff]merald-50 hover:bg-[#eeeaff]merald-100 text-emerald-800 px-4 py-2.5 rounded-xl font-semibold text-xs transition-colors border border-emerald-200"
                 >
-                  <Share2 className="w-4 h-4 text-emerald-600" />
+                  <Share2 className="w-4 h-4 text-[#6c47e6]" />
                   Compartilhar no WhatsApp
                 </button>
               </div>
@@ -282,7 +282,7 @@ function BibliotecaPage() {
                   placeholder="Ex: Módulo 1 - Informática Fundamental"
                   value={modulo}
                   onChange={(e) => setModulo(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm"
                 />
               </div>
 
@@ -295,7 +295,7 @@ function BibliotecaPage() {
                     placeholder="Ex: Excel, Word..."
                     value={materia}
                     onChange={(e) => setMateria(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm"
                   />
                 </div>
                 <div>
@@ -307,7 +307,7 @@ function BibliotecaPage() {
                     placeholder="Ex: 3"
                     value={numeroAula}
                     onChange={(e) => setNumeroAula(e.target.value === '' ? '' : Number(e.target.value))}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm"
                   />
                 </div>
               </div>
@@ -320,7 +320,7 @@ function BibliotecaPage() {
                   placeholder="Ex: Fórmulas Básicas e SOMA"
                   value={nomeAula}
                   onChange={(e) => setNomeAula(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm"
                 />
               </div>
 
@@ -331,7 +331,7 @@ function BibliotecaPage() {
                   placeholder="https://discover.app/livro/..."
                   value={linkLivro}
                   onChange={(e) => setLinkLivro(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm"
                 />
               </div>
 
@@ -342,7 +342,7 @@ function BibliotecaPage() {
                   placeholder="https://discover.app/jogos/..."
                   value={linkJogo}
                   onChange={(e) => setLinkJogo(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm"
                 />
               </div>
 
@@ -353,7 +353,7 @@ function BibliotecaPage() {
                   placeholder="O que o aluno deve fazer..."
                   value={tarefaCasa}
                   onChange={(e) => setTarefaCasa(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm"
                 />
               </div>
 
@@ -367,7 +367,7 @@ function BibliotecaPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm transition-all"
+                  className="px-5 py-2 text-sm font-medium bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 text-white rounded-xl shadow-sm transition-all"
                 >
                   {editingId ? 'Salvar Alterações' : 'Salvar Conteúdo'}
                 </button>

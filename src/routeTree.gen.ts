@@ -46,6 +46,20 @@ const TarefasLazyRoute = TarefasLazyRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/tarefas.lazy').then((d) => d.Route))
 
+const RelatoriosLazyRouteImport = createFileRoute('/relatorios')()
+const RelatoriosLazyRoute = RelatoriosLazyRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/relatorios.lazy').then((d) => d.Route))
+
+const ConfiguracoesLazyRouteImport = createFileRoute('/configuracoes')()
+const ConfiguracoesLazyRoute = ConfiguracoesLazyRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/configuracoes.lazy').then((d) => d.Route))
+
 const rootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   LoginLazyRoute: LoginLazyRoute,
@@ -53,6 +67,8 @@ const rootRouteChildren = {
   TurmasLazyRoute: TurmasLazyRoute,
   BibliotecaLazyRoute: BibliotecaLazyRoute,
   TarefasLazyRoute: TarefasLazyRoute,
+  RelatoriosLazyRoute: RelatoriosLazyRoute,
+  ConfiguracoesLazyRoute: ConfiguracoesLazyRoute,
 }
 
 export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)

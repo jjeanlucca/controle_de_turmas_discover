@@ -42,12 +42,12 @@ function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Elementos decorativos de fundo */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-[#eeeaff]merald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="flex justify-center">
-          <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-600/20">
+          <div className="w-16 h-16 bg-[#eeeaff]merald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-600/20">
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
         </div>
@@ -75,7 +75,7 @@ function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors outline-none"
+                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#845ef7] focus:border-emerald-500 sm:text-sm transition-colors outline-none"
                   placeholder="professor@escola.com"
                 />
               </div>
@@ -94,7 +94,7 @@ function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors outline-none"
+                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#845ef7] focus:border-emerald-500 sm:text-sm transition-colors outline-none"
                   placeholder="••••••••"
                 />
               </div>
@@ -103,7 +103,7 @@ function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+              className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#845ef7] transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-4"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />

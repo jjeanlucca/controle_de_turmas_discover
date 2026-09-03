@@ -169,7 +169,7 @@ function TurmasPage() {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
+          className="flex items-center gap-2 bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
         >
           <Plus className="w-5 h-5" />
           Nova Turma
@@ -179,7 +179,7 @@ function TurmasPage() {
       {/* Listagem e Loading */}
       {loading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+          <Loader2 className="w-8 h-8 animate-spin text-[#6c47e6]" />
         </div>
       ) : turmas.length === 0 ? (
         <div className="bg-white border border-dashed border-gray-300 rounded-2xl p-12 text-center space-y-4 shadow-sm">
@@ -200,8 +200,8 @@ function TurmasPage() {
             >
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center">
-                    <Layers className="text-emerald-600 w-5 h-5" />
+                  <div className="w-11 h-11 rounded-xl bg-[#eeeaff]merald-50 flex items-center justify-center">
+                    <Layers className="text-[#6c47e6] w-5 h-5" />
                   </div>
                   <div>
                     <h2 className="font-bold text-lg text-gray-900">
@@ -264,7 +264,7 @@ function TurmasPage() {
                   placeholder="Ex: Turma A"
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none text-sm bg-white"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#845ef7] focus:border-transparent outline-none text-sm bg-white"
                 />
               </div>
 
@@ -279,7 +279,7 @@ function TurmasPage() {
                   max="2099"
                   value={anoLetivo}
                   onChange={(e) => setAnoLetivo(Number(e.target.value))}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none text-sm bg-white"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#845ef7] focus:border-transparent outline-none text-sm bg-white"
                 />
               </div>
 
@@ -294,7 +294,7 @@ function TurmasPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm transition-all flex items-center gap-2 disabled:opacity-60"
+                  className="px-5 py-2 text-sm font-medium bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 text-white rounded-xl shadow-sm transition-all flex items-center gap-2 disabled:opacity-60"
                 >
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {saving ? "Salvando..." : editingTurma ? "Atualizar" : "Salvar"}

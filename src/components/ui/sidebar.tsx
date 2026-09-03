@@ -290,7 +290,7 @@ export const SidebarMenuButton = React.forwardRef<
       title={typeof tooltip === "string" ? tooltip : undefined}
       className={cn(
         "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors hover:bg-slate-100 hover:text-slate-900",
-        isActive && "bg-emerald-50 text-emerald-600 font-semibold",
+        isActive && "bg-[#eeeaff]merald-50 text-[#6c47e6] font-semibold",
         className
       )}
       {...props}

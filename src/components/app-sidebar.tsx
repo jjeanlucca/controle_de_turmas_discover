@@ -1,4 +1,6 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 import {
   LayoutDashboard,
   BookOpen,
@@ -7,8 +9,8 @@ import {
   BarChart3,
   Settings,
   GraduationCap,
+  LogOut,
 } from "lucide-react";
-
 
 import {
   Sidebar,
@@ -34,15 +36,56 @@ const nav = [
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const navigate = useNavigate();
+  const [perfil, setPerfil] = useState<{ nome: string; cargo: string; email: string } | null>(null);
+
   const isActive = (url: string) =>
     url === "/" ? pathname === "/" : pathname === url || pathname.startsWith(url + "/");
+
+  useEffect(() => {
+    const fetchPerfil = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data } = await supabase
+        .from('perfis')
+        .select('nome, cargo, email')
+        .eq('id', session.user.id)
+        .single();
+
+      if (data) {
+        setPerfil(data);
+      }
+    };
+
+    fetchPerfil();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate({ to: '/login' as never });
+  };
+
+  const getInitiais = (nome?: string, email?: string) => {
+    if (nome) {
+      const partes = nome.trim().split(" ");
+      if (partes.length >= 2) {
+        return (partes[0][0] + partes[1][0]).toUpperCase();
+      }
+      return partes[0].substring(0, 2).toUpperCase();
+    }
+    if (email) {
+      return email.substring(0, 2).toUpperCase();
+    }
+    return "US";
+  };
 
   return (
     <Sidebar collapsible="icon">
       
       <SidebarHeader className="border-b border-slate-200">
         <div className="flex items-center gap-3 px-2 py-3">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-600 text-white shadow-sm">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#6c47e6] text-white shadow-sm">
             <GraduationCap className="h-5 w-5" />
           </div>
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
@@ -85,18 +128,31 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-slate-200">
-        <div className="flex items-center gap-3 px-2 py-2">
-          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
-            MA
+        <div className="flex items-center justify-between px-2 py-2">
+          
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#eeeaff] text-emerald-700 text-xs font-bold uppercase">
+              {perfil ? getInitiais(perfil.nome, perfil.email) : '...'}
+            </div>
+            
+            <div className="min-w-0 group-data-[collapsible=icon]:hidden">
+              <p className="truncate text-sm font-medium leading-none text-slate-900">
+                {perfil?.nome || "Configure seu Perfil"}
+              </p>
+              <p className="truncate text-xs text-slate-500 mt-1 capitalize">
+                {perfil?.cargo === 'admin' ? 'Administrador' : (perfil?.cargo || "Carregando...")}
+              </p>
+            </div>
           </div>
-          <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-            <p className="truncate text-sm font-medium leading-none text-slate-900">
-              Prof. Marcos
-            </p>
-            <p className="truncate text-xs text-slate-500 mt-1">
-              Ano letivo 2026
-            </p>
-          </div>
+
+          <button
+            onClick={handleLogout}
+            title="Sair do Sistema"
+            className="group-data-[collapsible=icon]:hidden p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors outline-none"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
+          
         </div>
       </SidebarFooter>
       

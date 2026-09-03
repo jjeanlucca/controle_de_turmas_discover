@@ -135,7 +135,7 @@ function AlunosPage() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
+          className="flex items-center gap-2 bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
         >
           <UserPlus className="w-5 h-5" />
           Novo Aluno
@@ -175,7 +175,7 @@ function AlunosPage() {
               {filteredAlunos.map((aluno) => (
                 <tr key={aluno.id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="py-4 px-6 font-medium text-gray-900 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                    <div className="w-8 h-8 rounded-full bg-[#eeeaff]merald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
                       {aluno.nome.substring(0, 2).toUpperCase()}
                     </div>
                     {aluno.nome}
@@ -190,7 +190,7 @@ function AlunosPage() {
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => handleEdit(aluno)}
-                        className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                        className="p-2 text-gray-400 hover:text-[#6c47e6] hover:bg-[#eeeaff]merald-50 rounded-lg transition-colors"
                         title="Editar Aluno"
                       >
                         <Edit2 className="w-4 h-4" />
@@ -235,7 +235,7 @@ function AlunosPage() {
                   placeholder="Ex: João da Silva"
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] focus:border-transparent text-sm"
                 />
               </div>
 
@@ -244,7 +244,7 @@ function AlunosPage() {
                 <select
                   value={turmaId}
                   onChange={(e) => setTurmaId(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-white"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] focus:border-transparent text-sm bg-white"
                 >
                   <option value="">Selecione uma turma (opcional)</option>
                   {turmas.map((t) => (
@@ -265,7 +265,7 @@ function AlunosPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm transition-all"
+                  className="px-5 py-2 text-sm font-medium bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 text-white rounded-xl shadow-sm transition-all"
                 >
                   {editingId ? 'Salvar Alterações' : 'Salvar Aluno'}
                 </button>

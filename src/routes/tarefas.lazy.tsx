@@ -123,7 +123,7 @@ function TarefasPage() {
         {activeTab === 'atividades' && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
+            className="flex items-center gap-2 bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
           >
             <Plus className="w-5 h-5" />
             Nova Atividade
@@ -182,7 +182,7 @@ function TarefasPage() {
               <div key={ativ.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow flex flex-col justify-between space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-semibold">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#eeeaff]merald-50 text-emerald-700 rounded-lg text-xs font-semibold">
                       <Layers className="w-3.5 h-3.5" /> {ativ.turmas?.nome || 'Geral'}
                     </span>
                     <button
@@ -266,7 +266,7 @@ function TarefasPage() {
                   placeholder="Ex: Exercício prático de Flexbox"
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm"
                 />
               </div>
 
@@ -275,7 +275,7 @@ function TarefasPage() {
                 <select
                   value={turmaId}
                   onChange={(e) => setTurmaId(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm bg-white"
                 >
                   <option value="">Selecione uma turma (opcional)</option>
                   {turmas.map((t) => (
@@ -292,7 +292,7 @@ function TarefasPage() {
                   type="date"
                   value={prazo}
                   onChange={(e) => setPrazo(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm"
                 />
               </div>
 
@@ -303,13 +303,13 @@ function TarefasPage() {
                   placeholder="Instruções para realizar a tarefa..."
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm"
                 />
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl">Cancelar</button>
-                <button type="submit" className="px-5 py-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm">Salvar Atividade</button>
+                <button type="submit" className="px-5 py-2 text-sm font-medium bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 text-white rounded-xl shadow-sm">Salvar Atividade</button>
               </div>
             </form>
           </div>

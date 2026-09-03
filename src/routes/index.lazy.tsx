@@ -48,9 +48,9 @@ function DashboardPage() {
     <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-300">
       {/* Banner de Boas-Vindas */}
       <div className="relative overflow-hidden bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 rounded-3xl p-8 md:p-10 text-white shadow-xl">
-        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-emerald-600/25 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-[#eeeaff]merald-600/25 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 space-y-3">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-emerald-800/80 text-emerald-200 rounded-full text-xs font-semibold backdrop-blur-sm border border-emerald-700/50">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#eeeaff]merald-800/80 text-emerald-200 rounded-full text-xs font-semibold backdrop-blur-sm border border-emerald-700/50">
             <Sparkles className="w-3.5 h-3.5" /> Painel de Controle Escolar
           </span>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
@@ -69,7 +69,7 @@ function DashboardPage() {
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total de Turmas</p>
             <h3 className="text-3xl font-extrabold text-gray-900">{loading ? '...' : stats.turmas}</h3>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+          <div className="w-12 h-12 rounded-xl bg-[#eeeaff]merald-50 text-[#6c47e6] flex items-center justify-center font-bold">
             <Layers className="w-6 h-6" />
           </div>
         </div>
@@ -115,13 +115,13 @@ function DashboardPage() {
             className="group bg-white p-6 rounded-2xl shadow-sm border border-gray-200/80 hover:border-emerald-500 hover:shadow-md transition-all flex flex-col justify-between space-y-6"
           >
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-[#eeeaff]merald-50 text-[#6c47e6] flex items-center justify-center font-bold group-hover:bg-[#eeeaff]merald-600 group-hover:text-white transition-colors">
                 <Layers className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">Gerenciar Turmas</h3>
+              <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#6c47e6] transition-colors">Gerenciar Turmas</h3>
               <p className="text-sm text-gray-500">Cadastre novas turmas e controle o avanço semestral das aulas e matérias.</p>
             </div>
-            <div className="flex items-center gap-1 text-xs font-semibold text-emerald-600">
+            <div className="flex items-center gap-1 text-xs font-semibold text-[#6c47e6]">
               Acessar módulo <ArrowUpRight className="w-4 h-4" />
             </div>
           </Link>

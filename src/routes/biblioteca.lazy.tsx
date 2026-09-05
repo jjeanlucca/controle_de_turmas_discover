@@ -157,7 +157,7 @@ function BibliotecaPage() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
+          className="flex items-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
         >
           <Plus className="w-5 h-5" />
           Novo Conteúdo
@@ -194,13 +194,13 @@ function BibliotecaPage() {
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#eeeaff]merald-50 text-emerald-700 rounded-lg text-xs font-semibold">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#eeeaff] text-[#6c47e6] rounded-lg text-xs font-semibold">
                     <Layers className="w-3.5 h-3.5" /> {item.modulo}
                   </span>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleEdit(item)}
-                      className="p-1.5 text-gray-400 hover:text-[#6c47e6] hover:bg-[#eeeaff]merald-50 rounded-lg transition-colors"
+                      className="p-1.5 text-gray-400 hover:text-[#6c47e6] hover:bg-[#eeeaff] rounded-lg transition-colors"
                       title="Editar"
                     >
                       <Edit2 className="w-4 h-4" />
@@ -218,7 +218,7 @@ function BibliotecaPage() {
                 <div>
                   <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{item.materia}</span>
                   <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2 mt-1">
-                    <span className="w-7 h-7 rounded-lg bg-[#eeeaff]merald-100 text-emerald-800 flex items-center justify-center text-xs font-extrabold">
+                    <span className="w-7 h-7 rounded-lg bg-[#eeeaff] text-[#6c47e6] flex items-center justify-center text-xs font-extrabold">
                       {item.numero_aula}
                     </span>
                     {item.nome_aula}
@@ -249,9 +249,9 @@ function BibliotecaPage() {
 
                 <button
                   onClick={() => handleShareWhatsApp(item)}
-                  className="w-full mt-2 flex items-center justify-center gap-2 bg-[#eeeaff]merald-50 hover:bg-[#eeeaff]merald-100 text-emerald-800 px-4 py-2.5 rounded-xl font-semibold text-xs transition-colors border border-emerald-200"
+                  className="w-full mt-2 flex items-center justify-center gap-2 border border-[#6c47e6] text-[#6c47e6] hover:bg-[#eeeaff] px-4 py-2.5 rounded-xl font-semibold text-xs transition-colors"
                 >
-                  <Share2 className="w-4 h-4 text-[#6c47e6]" />
+                  <Share2 className="w-4 h-4" />
                   Compartilhar no WhatsApp
                 </button>
               </div>
@@ -367,7 +367,7 @@ function BibliotecaPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-sm font-medium bg-[#eeeaff]merald-600 hover:bg-[#eeeaff]merald-700 text-white rounded-xl shadow-sm transition-all"
+                  className="px-5 py-2 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-all"
                 >
                   {editingId ? 'Salvar Alterações' : 'Salvar Conteúdo'}
                 </button>

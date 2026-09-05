@@ -5,13 +5,14 @@ import {
   LayoutDashboard,
   BookOpen,
   Users,
-  User, // <-- Importamos o ícone novo
+  User, 
   ListChecks,
   BarChart3,
   Settings,
   GraduationCap,
   LogOut,
-  Layers
+  Layers,
+  TrendingUp // <-- Ícone novo importado para o Desempenho
 } from "lucide-react";
 
 import {
@@ -27,13 +28,13 @@ import {
   SidebarFooter,
 } from "./ui/sidebar";
 
-// 👇 O BOTÃO DE ALUNOS FOI ADICIONADO AQUI 👇
 const nav = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Alunos", url: "/alunos", icon: User },
   { title: "Turmas", url: "/turmas", icon: Layers },
   { title: "Biblioteca", url: "/biblioteca", icon: BookOpen },
   { title: "Controle de Tarefas", url: "/tarefas", icon: ListChecks },
+  { title: "Desempenho", url: "/boletim", icon: TrendingUp }, // <-- Adicionado aqui!
   { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
   { title: "Configurações", url: "/configuracoes", icon: Settings },
 ] as const;
@@ -52,7 +53,7 @@ export function AppSidebar() {
       if (!session) return;
 
       const { data } = await supabase
-        .from('profiles') // Ajustado de perfis para profiles (como no seu banco SQL)
+        .from('profiles')
         .select('nome, role, email')
         .eq('id', session.user.id)
         .single();

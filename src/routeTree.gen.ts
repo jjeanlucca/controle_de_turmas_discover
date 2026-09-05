@@ -46,6 +46,13 @@ const TarefasLazyRoute = TarefasLazyRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/tarefas.lazy').then((d) => d.Route))
 
+const BoletimLazyRouteImport = createFileRoute('/boletim')()
+const BoletimLazyRoute = BoletimLazyRouteImport.update({
+  id: '/boletim',
+  path: '/boletim',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/boletim.lazy').then((d) => d.Route))
+
 const RelatoriosLazyRouteImport = createFileRoute('/relatorios')()
 const RelatoriosLazyRoute = RelatoriosLazyRouteImport.update({
   id: '/relatorios',
@@ -67,6 +74,7 @@ const rootRouteChildren = {
   TurmasLazyRoute: TurmasLazyRoute,
   BibliotecaLazyRoute: BibliotecaLazyRoute,
   TarefasLazyRoute: TarefasLazyRoute,
+  BoletimLazyRoute: BoletimLazyRoute,
   RelatoriosLazyRoute: RelatoriosLazyRoute,
   ConfiguracoesLazyRoute: ConfiguracoesLazyRoute,
 }

@@ -4,7 +4,7 @@ import React from "react";
 import { supabase } from "../lib/supabase";
 import { 
   Plus, X, ListChecks, CheckCircle, Clock, AlertCircle, 
-  Search, Layers, Loader2, Save, BookOpen, Monitor, Star 
+  Search, Layers, Loader2, Save, BookOpen, Monitor, Star, ChevronDown
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -216,12 +216,20 @@ function TarefasPage() {
   // ==========================
   // RENDERIZAÇÃO E FILTROS
   // ==========================
-  const getTypeIcon = (tipo: string) => {
-    switch(tipo) {
-      case 'Física': return <BookOpen className="w-4 h-4 text-emerald-600" />;
-      case 'Digital': return <Monitor className="w-4 h-4 text-blue-600" />;
-      case 'Extraclasse': return <Star className="w-4 h-4 text-amber-500" />;
-      default: return <ListChecks className="w-4 h-4 text-gray-500" />;
+  const getTypeConfig = (tipo: string) => {
+    switch (tipo) {
+      case 'Física': return { icon: BookOpen, color: 'text-emerald-600', bg: 'bg-emerald-50' };
+      case 'Digital': return { icon: Monitor, color: 'text-blue-600', bg: 'bg-blue-50' };
+      case 'Extraclasse': return { icon: Star, color: 'text-amber-600', bg: 'bg-amber-50' };
+      default: return { icon: ListChecks, color: 'text-gray-500', bg: 'bg-gray-50' };
+    }
+  };
+
+  const getStatusStyles = (status: string) => {
+    switch (status) {
+      case 'Entregue': return 'bg-[#f3efff] text-[#6c47e6]';
+      case 'Atrasado': return 'bg-red-50 text-red-600';
+      default: return 'bg-amber-50 text-amber-600';
     }
   };
 
@@ -232,139 +240,195 @@ function TarefasPage() {
   });
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-300">
-      
-      {/* CABEÇALHO */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-6">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Controle de Tarefas</h1>
-          <p className="text-gray-500 mt-1">Gerencie prazos, tipos de atividades e lance notas nas planilhas.</p>
-        </div>
-        <button
-          onClick={openTaskModal}
-          className="flex items-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
-        >
-          <Plus className="w-5 h-5" />
-          Nova Tarefa
-        </button>
-      </div>
+    <div className="min-h-screen bg-gray-50/60">
+      <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
 
-      {/* FILTROS */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
-        <div className="relative w-full sm:flex-1">
-          <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Buscar tarefa..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 outline-none focus:bg-white focus:ring-2 focus:ring-[#845ef7] transition-all text-sm"
-          />
-        </div>
-        <div className="relative w-full sm:w-64">
-          <Layers className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-          <select
-            value={selectedTurmaFilter}
-            onChange={(e) => setSelectedTurmaFilter(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 outline-none focus:bg-white focus:ring-2 focus:ring-[#845ef7] transition-all text-sm cursor-pointer appearance-none truncate"
+        {/* Cabeçalho */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-7 border-b border-gray-200">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-[#6c47e6] flex items-center justify-center shadow-sm shadow-[#6c47e6]/20 shrink-0">
+              <ListChecks className="w-6 h-6 text-white" strokeWidth={2} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Controle de Tarefas</h1>
+              <p className="text-sm text-gray-500 mt-0.5">Gerencie prazos, tipos de atividades e lance notas nas planilhas</p>
+            </div>
+          </div>
+          <button
+            onClick={openTaskModal}
+            className="inline-flex items-center justify-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors self-start md:self-auto"
           >
-            <option value="">Todas as Turmas</option>
-            {turmas.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
-          </select>
+            <Plus className="w-4 h-4" strokeWidth={2.5} />
+            Nova tarefa
+          </button>
         </div>
+
+        {/* Filtros */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Buscar tarefa..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full h-11 bg-white border border-gray-200 rounded-xl pl-10 pr-4 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm placeholder:text-gray-400"
+            />
+          </div>
+          <div className="relative w-full sm:w-64">
+            <Layers className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <select
+              value={selectedTurmaFilter}
+              onChange={(e) => setSelectedTurmaFilter(e.target.value)}
+              className="w-full h-11 appearance-none bg-white border border-gray-200 rounded-xl pl-10 pr-9 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm cursor-pointer truncate"
+            >
+              <option value="">Todas as turmas</option>
+              {turmas.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
+            </select>
+            <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+        </div>
+
+        {/* Lista de tarefas */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-24 text-gray-400">
+            <Loader2 className="w-7 h-7 animate-spin text-[#6c47e6]" />
+            <p className="text-sm">Carregando tarefas...</p>
+          </div>
+        ) : atividadesFiltradas.length === 0 ? (
+          <div className="bg-white border border-dashed border-gray-300 rounded-2xl py-20 px-6 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center mx-auto mb-4">
+              <ListChecks className="w-6 h-6 text-gray-300" />
+            </div>
+            <h3 className="text-base font-semibold text-gray-800">Nenhuma tarefa encontrada</h3>
+            <p className="text-gray-500 text-sm mt-1">Cadastre uma nova tarefa para começar o acompanhamento.</p>
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {atividadesFiltradas.map((ativ) => {
+              const typeConfig = getTypeConfig(ativ.tipo);
+              const TypeIcon = typeConfig.icon;
+
+              return (
+                <div
+                  key={ativ.id}
+                  className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col justify-between hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  <div>
+                    <div className="flex justify-between items-start gap-2">
+                      <span className={`inline-flex items-center gap-1.5 ${typeConfig.bg} ${typeConfig.color} px-2.5 py-1 rounded-md text-xs font-medium`}>
+                        <TypeIcon className="w-3.5 h-3.5" />
+                        {ativ.tipo}
+                      </span>
+                      {ativ.prazo && (
+                        <span className="inline-flex items-center gap-1 text-xs text-gray-500 shrink-0">
+                          <Clock className="w-3.5 h-3.5" />
+                          {new Date(ativ.prazo + 'T12:00:00').toLocaleDateString('pt-BR')}
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="font-semibold text-gray-900 mt-3 line-clamp-2" title={ativ.titulo}>
+                      {ativ.titulo}
+                    </h3>
+                    <p className="text-sm text-[#6c47e6] font-medium flex items-center gap-1.5 mt-2">
+                      <Layers className="w-3.5 h-3.5" />
+                      {ativ.turmas?.nome || 'Turma não atribuída'}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => openPlanilha(ativ)}
+                    className="w-full mt-5 bg-[#f3efff] hover:bg-[#e3d9ff] text-[#6c47e6] py-2.5 rounded-xl font-medium text-sm transition-colors flex justify-center items-center gap-2"
+                  >
+                    Abrir planilha de notas
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
 
-      {/* LISTA DE TAREFAS */}
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-[#6c47e6]" />
-        </div>
-      ) : atividadesFiltradas.length === 0 ? (
-        <div className="bg-white border border-dashed border-gray-300 rounded-2xl p-16 text-center space-y-4">
-          <ListChecks className="w-16 h-16 text-gray-300 mx-auto" />
-          <h3 className="text-lg font-bold text-gray-700">Nenhuma tarefa encontrada</h3>
-          <p className="text-gray-500 text-sm">Cadastre uma nova tarefa para começar o acompanhamento.</p>
-        </div>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {atividadesFiltradas.map((ativ) => (
-            <div key={ativ.id} className="bg-white border border-gray-200 rounded-2xl p-5 hover:shadow-md transition-shadow flex flex-col justify-between">
-              <div>
-                <div className="flex justify-between items-start mb-2">
-                  <div className="flex items-center gap-2 bg-gray-50 px-2.5 py-1 rounded-md border border-gray-100">
-                    {getTypeIcon(ativ.tipo)}
-                    <span className="text-[11px] font-bold text-gray-600 uppercase tracking-wider">{ativ.tipo}</span>
-                  </div>
-                  {ativ.prazo && (
-                    <span className="text-xs font-medium text-gray-500 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      {new Date(ativ.prazo + 'T12:00:00').toLocaleDateString('pt-BR')}
-                    </span>
-                  )}
-                </div>
-                
-                <h3 className="font-bold text-gray-900 text-lg mb-1 mt-3 line-clamp-2" title={ativ.titulo}>
-                  {ativ.titulo}
-                </h3>
-                <p className="text-sm text-[#6c47e6] font-medium flex items-center gap-1.5 mt-2">
-                  <Layers className="w-4 h-4" />
-                  {ativ.turmas?.nome || 'Turma não atribuída'}
-                </p>
-              </div>
-
+      {/* Modal: criação de tarefa */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
+            <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100">
+              <h2 className="text-lg font-bold text-gray-900">Nova tarefa</h2>
               <button
-                onClick={() => openPlanilha(ativ)}
-                className="w-full mt-6 bg-[#eeeaff] hover:bg-[#d5ccff] text-[#6c47e6] py-2.5 rounded-xl font-bold text-sm transition-colors flex justify-center items-center gap-2"
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors"
               >
-                Abrir Planilha de Notas
+                <X className="w-4.5 h-4.5" />
               </button>
             </div>
-          ))}
-        </div>
-      )}
 
-      {/* MODAL CRIAÇÃO DE TAREFA */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-6 relative animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center border-b pb-4">
-              <h2 className="text-xl font-bold text-gray-900">Nova Tarefa</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg transition-colors"><X className="w-5 h-5" /></button>
-            </div>
-            
-            <form onSubmit={handleSaveTask} className="space-y-4">
+            <form onSubmit={handleSaveTask} className="p-6 space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Título da Atividade *</label>
-                <input type="text" required value={titulo} onChange={(e) => setTitulo(e.target.value)} placeholder="Ex: Workbook Pag. 12" className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#845ef7] outline-none text-sm bg-white"/>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Título da atividade</label>
+                <input
+                  type="text"
+                  required
+                  value={titulo}
+                  onChange={(e) => setTitulo(e.target.value)}
+                  placeholder="Ex: Workbook Pag. 12"
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm bg-white"
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Tipo de Tarefa *</label>
-                <select value={tipo} onChange={(e) => setTipo(e.target.value as any)} className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#845ef7] outline-none text-sm bg-white cursor-pointer">
-                  <option value="Física">Física (Workbook, Caderno, Impresso)</option>
-                  <option value="Digital">Digital (Wordwall, Plataforma, Quiz)</option>
-                  <option value="Extraclasse">Extraclasse (Pesquisa, Maquete, Projeto)</option>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Tipo de tarefa</label>
+                <select
+                  value={tipo}
+                  onChange={(e) => setTipo(e.target.value as any)}
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm bg-white cursor-pointer"
+                >
+                  <option value="Física">Física (workbook, caderno, impresso)</option>
+                  <option value="Digital">Digital (Wordwall, plataforma, quiz)</option>
+                  <option value="Extraclasse">Extraclasse (pesquisa, maquete, projeto)</option>
                 </select>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Turma *</label>
-                  <select required value={turmaId} onChange={(e) => setTurmaId(e.target.value)} className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#845ef7] outline-none text-sm bg-white cursor-pointer">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Turma</label>
+                  <select
+                    required
+                    value={turmaId}
+                    onChange={(e) => setTurmaId(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm bg-white cursor-pointer"
+                  >
                     <option value="" disabled>Selecione...</option>
                     {turmas.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Prazo Final</label>
-                  <input type="date" value={prazo} onChange={(e) => setPrazo(e.target.value)} className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#845ef7] outline-none text-sm bg-white"/>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Prazo final</label>
+                  <input
+                    type="date"
+                    value={prazo}
+                    onChange={(e) => setPrazo(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm bg-white"
+                  />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">Cancelar</button>
-                <button type="submit" disabled={savingTask} className="px-5 py-2 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-all flex items-center gap-2">
-                  {savingTask && <Loader2 className="w-4 h-4 animate-spin" />} Criar Tarefa
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingTask}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
+                >
+                  {savingTask && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Criar tarefa
                 </button>
               </div>
             </form>
@@ -372,68 +436,68 @@ function TarefasPage() {
         </div>
       )}
 
-      {/* MODAL PLANILHA INTELIGENTE */}
+      {/* Modal: planilha inteligente */}
       {isPlanilhaOpen && atividadeSelecionada && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl p-6 space-y-6 relative animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-            
-            <div className="flex justify-between items-start border-b pb-4">
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl flex flex-col max-h-[90vh]">
+
+            <div className="flex justify-between items-start px-6 py-5 border-b border-gray-100 shrink-0">
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="bg-gray-100 text-gray-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                    {atividadeSelecionada.tipo}
-                  </span>
-                </div>
-                <h2 className="text-xl font-bold text-gray-900">{atividadeSelecionada.titulo}</h2>
-                <p className="text-sm text-[#6c47e6] font-medium mt-1">Turma: {atividadeSelecionada.turmas?.nome}</p>
+                <span className="inline-flex bg-gray-100 text-gray-600 text-[11px] font-medium px-2 py-0.5 rounded-md mb-1.5">
+                  {atividadeSelecionada.tipo}
+                </span>
+                <h2 className="text-lg font-bold text-gray-900">{atividadeSelecionada.titulo}</h2>
+                <p className="text-sm text-[#6c47e6] font-medium mt-0.5">Turma: {atividadeSelecionada.turmas?.nome}</p>
               </div>
-              <button onClick={() => setIsPlanilhaOpen(false)} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg transition-colors"><X className="w-5 h-5" /></button>
+              <button
+                onClick={() => setIsPlanilhaOpen(false)}
+                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors shrink-0"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto min-h-[300px]">
+            <div className="flex-1 overflow-y-auto min-h-[300px] px-6">
               {loadingPlanilha ? (
-                <div className="flex justify-center items-center h-full">
-                  <Loader2 className="w-8 h-8 animate-spin text-[#6c47e6]" />
+                <div className="flex justify-center items-center h-full py-16">
+                  <Loader2 className="w-7 h-7 animate-spin text-[#6c47e6]" />
                 </div>
               ) : alunosDaTurma.length === 0 ? (
-                <div className="text-center text-gray-500 py-10">Nenhum aluno matriculado nesta turma.</div>
+                <div className="text-center text-gray-500 text-sm py-16">Nenhum aluno matriculado nesta turma.</div>
               ) : (
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-xs uppercase tracking-wider font-semibold sticky top-0 z-10">
-                      <th className="py-3 px-4">Aluno</th>
-                      <th className="py-3 px-4 w-40">Status</th>
-                      <th className="py-3 px-4 w-32 text-right">Nota / Visto</th>
+                    <tr className="bg-white border-b border-gray-200 text-gray-500 text-xs font-medium sticky top-0 z-10">
+                      <th className="py-3 px-2">Aluno</th>
+                      <th className="py-3 px-2 w-40">Status</th>
+                      <th className="py-3 px-2 w-28 text-right">Nota / visto</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
                     {alunosDaTurma.map(aluno => (
-                      <tr key={aluno.id} className="hover:bg-gray-50/50 transition-colors">
-                        <td className="py-3 px-4 font-medium text-gray-900">{aluno.nome}</td>
-                        <td className="py-3 px-4">
+                      <tr key={aluno.id} className="hover:bg-gray-50/60 transition-colors">
+                        <td className="py-3 px-2 font-medium text-gray-900">{aluno.nome}</td>
+                        <td className="py-3 px-2">
                           <select
                             value={notas[aluno.id]?.status || 'Pendente'}
                             onChange={(e) => handleUpdateNota(aluno.id, 'status', e.target.value)}
-                            className={`w-full border-0 rounded-lg px-3 py-1.5 outline-none font-bold text-xs cursor-pointer appearance-none
-                              ${notas[aluno.id]?.status === 'Entregue' ? 'bg-[#eeeaff] text-[#6c47e6]' : 
-                                notas[aluno.id]?.status === 'Atrasado' ? 'bg-red-50 text-red-600' : 
-                                'bg-amber-50 text-amber-600'}`}
+                            className={`w-full border-0 rounded-lg px-3 py-1.5 outline-none font-medium text-xs cursor-pointer appearance-none focus:ring-4 focus:ring-[#6c47e6]/10 ${getStatusStyles(notas[aluno.id]?.status || 'Pendente')}`}
                           >
                             <option value="Pendente">⌛ Pendente</option>
                             <option value="Entregue">✅ Entregue</option>
                             <option value="Atrasado">⚠️ Atrasado</option>
                           </select>
                         </td>
-                        <td className="py-3 px-4 text-right">
+                        <td className="py-3 px-2 text-right">
                           <input
                             type="number"
                             min="0"
                             max="10"
                             step="0.1"
                             placeholder="-"
-                            value={notas[aluno.id]?.nota || ''}
+                            value={notas[aluno.id]?.nota ?? ''}
                             onChange={(e) => handleUpdateNota(aluno.id, 'nota', e.target.value)}
-                            className="w-20 border border-gray-200 rounded-lg px-2 py-1.5 text-center text-sm font-bold text-gray-900 focus:ring-2 focus:ring-[#845ef7] outline-none"
+                            className="w-20 border border-gray-200 rounded-lg px-2 py-1.5 text-center text-sm font-semibold text-gray-900 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all"
                           />
                         </td>
                       </tr>
@@ -443,20 +507,23 @@ function TarefasPage() {
               )}
             </div>
 
-            <div className="border-t pt-4 flex justify-end gap-3">
-              <button onClick={() => setIsPlanilhaOpen(false)} className="px-5 py-2.5 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl transition-colors">
+            <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 shrink-0">
+              <button
+                onClick={() => setIsPlanilhaOpen(false)}
+                className="px-5 py-2.5 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl transition-colors"
+              >
                 Cancelar
               </button>
-              <button 
-                onClick={handleSavePlanilha} 
+              <button
+                onClick={handleSavePlanilha}
                 disabled={savingPlanilha || loadingPlanilha}
-                className="px-6 py-2.5 text-sm font-bold bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-all flex items-center gap-2"
+                className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
               >
-                {savingPlanilha ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />} 
-                Salvar Planilha
+                {savingPlanilha ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Salvar planilha
               </button>
             </div>
-            
+
           </div>
         </div>
       )}

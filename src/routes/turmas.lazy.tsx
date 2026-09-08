@@ -120,22 +120,19 @@ function TurmasPage() {
   };
 
   const handleDeleteTurma = async (id: string) => {
-    const ok = window.confirm("Deseja realmente excluir esta turma?");
+    const ok = window.confirm("Deseja realmente excluir esta turma? Todos os alunos perderão o vínculo e as atividades dela serão apagadas.");
     if (!ok) return;
 
     try {
-      const { count, error: countError } = await supabase
-        .from("turma_alunos")
-        .select("*", { count: "exact", head: true })
-        .eq("turma_id", id);
+      // 1. Primeiro, apagamos os vínculos dos alunos com esta turma
+      const { error: errorAlunos } = await supabase.from('turma_alunos').delete().eq('turma_id', id);
+      if (errorAlunos) throw errorAlunos;
 
-      if (countError) throw countError;
+      // 2. Apagamos as atividades exclusivas desta turma (para não dar erro de chave estrangeira)
+      const { error: errorAtividades } = await supabase.from('atividades').delete().eq('turma_id', id);
+      if (errorAtividades) throw errorAtividades;
 
-      if (count && count > 0) {
-        toast.error("Não é possível excluir uma turma que possui alunos matriculados.");
-        return;
-      }
-
+      // 3. Finalmente, excluímos a turma "limpa"
       const { error } = await supabase.from("turmas").delete().eq("id", id);
       if (error) throw error;
 
@@ -384,7 +381,7 @@ function TurmasPage() {
             </form>
 
             {/* Lista de Alunos */}
-            <div className="flex-1 overflow-y-auto pr-2 space-y-2 min-h-[200px]">
+            <div className="flex-1 overflow-y-auto pr-2 space-y-2 min-h-50">
               {loadingAlunos ? (
                 <div className="flex justify-center items-center h-full">
                   <Loader2 className="w-6 h-6 animate-spin text-[#6c47e6]" />

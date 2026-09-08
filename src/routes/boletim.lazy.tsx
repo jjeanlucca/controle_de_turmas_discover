@@ -2,7 +2,7 @@ import { createLazyFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { supabase } from '../lib/supabase'
-import { Search, GraduationCap, Award, FileText, AlertCircle, CheckCircle, Clock, Filter, Layers } from 'lucide-react'
+import { Search, GraduationCap, Award, FileText, AlertCircle, CheckCircle, Clock, Filter, Layers, ChevronDown, Loader2 } from 'lucide-react'
 
 export const Route = createLazyFileRoute('/boletim' as never)({
   component: BoletimPage,
@@ -241,136 +241,144 @@ function BoletimPage() {
   }, [selectedAlunoId])
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-300">
-      {/* Cabeçalho */}
-      <div className="border-b pb-6">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Desempenho & Boletim</h1>
-        <p className="text-gray-500 mt-1">Acompanhe as notas, entregas e a média geral individual de cada aluno.</p>
-      </div>
+    <div className="min-h-screen bg-gray-50/60">
+      <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
 
-      {/* Seletor de Aluno */}
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="w-full md:w-1/2 flex items-center gap-3">
-          <div className="w-12 h-12 bg-[#eeeaff] text-[#6c47e6] rounded-xl flex items-center justify-center shrink-0">
-            <Search className="w-6 h-6" />
+        {/* Cabeçalho */}
+        <div className="flex items-center gap-4 pb-7 border-b border-gray-200">
+          <div className="w-12 h-12 rounded-2xl bg-[#6c47e6] flex items-center justify-center shadow-sm shadow-[#6c47e6]/20 shrink-0">
+            <GraduationCap className="w-6 h-6 text-white" strokeWidth={2} />
           </div>
-          <div className="flex-1">
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Pesquisar Aluno</label>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Desempenho & Boletim</h1>
+            <p className="text-sm text-gray-500 mt-0.5">Acompanhe as notas, entregas e a média geral individual de cada aluno</p>
+          </div>
+        </div>
+
+        {/* Seletor de aluno */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-5">
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Pesquisar aluno</label>
+          <div className="relative w-full md:w-96">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <select
               value={selectedAlunoId}
               onChange={(e) => setSelectedAlunoId(e.target.value)}
-              className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] text-sm bg-white cursor-pointer transition-all"
+              className="w-full h-11 appearance-none border border-gray-200 rounded-xl pl-10 pr-9 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm bg-white cursor-pointer"
             >
               <option value="">Selecione um aluno para gerar o boletim...</option>
               {alunos.map(a => (
                 <option key={a.id} value={a.id}>{a.nome}</option>
               ))}
             </select>
+            <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
         </div>
-      </div>
 
-      {/* Exibição do Boletim */}
-      {!selectedAlunoId ? (
-        <div className="bg-gray-50 border border-dashed border-gray-300 rounded-2xl p-16 text-center space-y-4">
-          <GraduationCap className="w-16 h-16 text-gray-300 mx-auto" />
-          <div>
-            <h3 className="text-xl font-bold text-gray-700">Nenhum aluno selecionado</h3>
+        {/* Exibição do boletim */}
+        {!selectedAlunoId ? (
+          <div className="bg-white border border-dashed border-gray-300 rounded-2xl py-20 px-6 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center mx-auto mb-4">
+              <GraduationCap className="w-6 h-6 text-gray-300" />
+            </div>
+            <h3 className="text-base font-semibold text-gray-800">Nenhum aluno selecionado</h3>
             <p className="text-gray-500 text-sm mt-1">Escolha um aluno acima para visualizar suas notas e desempenho.</p>
           </div>
-        </div>
-      ) : loading ? (
-        <div className="text-center py-12 text-gray-500">Calculando médias e buscando tarefas...</div>
-      ) : (
-        <div className="space-y-6">
-          
-          {/* Cards de Resumo (KPIs) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-                <Award className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Média Geral</p>
-                <h4 className="text-3xl font-extrabold text-gray-900">
-                  {media !== null ? media : '--'}
-                </h4>
-              </div>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Tarefas Entregues</p>
-                <h4 className="text-3xl font-extrabold text-gray-900">{totalEntregues}</h4>
-              </div>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-red-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Tarefas Atrasadas</p>
-                <h4 className="text-3xl font-extrabold text-gray-900 text-red-600">{totalAtrasados}</h4>
-              </div>
-            </div>
+        ) : loading ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-24 text-gray-400">
+            <Loader2 className="w-7 h-7 animate-spin text-[#6c47e6]" />
+            <p className="text-sm">Calculando médias e buscando tarefas...</p>
           </div>
+        ) : (
+          <div className="space-y-4">
 
-          {/* Tabela de Atividades */}
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-gray-500" />
-              <h3 className="text-lg font-bold text-gray-800">Histórico de Atividades</h3>
+            {/* KPIs */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center gap-4 hover:border-gray-300 hover:shadow-md transition-all duration-200">
+                <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                  <Award className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Média geral</p>
+                  <h4 className="text-2xl font-bold text-gray-900 mt-0.5">
+                    {media !== null ? media : '--'}
+                  </h4>
+                </div>
+              </div>
+
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center gap-4 hover:border-gray-300 hover:shadow-md transition-all duration-200">
+                <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <CheckCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Tarefas entregues</p>
+                  <h4 className="text-2xl font-bold text-gray-900 mt-0.5">{totalEntregues}</h4>
+                </div>
+              </div>
+
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center gap-4 hover:border-gray-300 hover:shadow-md transition-all duration-200">
+                <div className="w-11 h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Tarefas atrasadas</p>
+                  <h4 className="text-2xl font-bold text-red-600 mt-0.5">{totalAtrasados}</h4>
+                </div>
+              </div>
             </div>
-            
-            {boletim.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">Este aluno ainda não possui atividades atribuídas.</div>
-            ) : (
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-white border-b border-gray-100 text-gray-500 text-xs uppercase tracking-wider font-semibold">
-                    <th className="py-4 px-6">Atividade</th>
-                    <th className="py-4 px-6">Prazo</th>
-                    <th className="py-4 px-6">Status</th>
-                    <th className="py-4 px-6 text-right">Nota</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
-                  {boletim.map((item) => (
-                    <tr key={item.atividade_id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="py-4 px-6 font-medium text-gray-900">{item.titulo}</td>
-                      <td className="py-4 px-6 text-gray-500">
-                        {item.prazo ? (
-                          <span className="flex items-center gap-1.5">
-                            <Clock className="w-3.5 h-3.5" />
-                            {new Date(item.prazo + 'T12:00:00').toLocaleDateString('pt-BR')}
-                          </span>
-                        ) : '-'}
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${
-                          item.status === 'Entregue' ? 'bg-[#eeeaff] text-[#6c47e6]' :
-                          item.status === 'Pendente' ? 'bg-amber-50 text-amber-600' :
-                          'bg-red-50 text-red-600'
-                        }`}>
-                          {item.status}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6 text-right font-extrabold text-lg text-gray-900">
-                        {item.nota !== null ? item.nota : '-'}
-                      </td>
+
+            {/* Tabela de atividades */}
+            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-gray-400" />
+                <h3 className="text-sm font-semibold text-gray-800">Histórico de atividades</h3>
+              </div>
+
+              {boletim.length === 0 ? (
+                <div className="py-16 text-center text-gray-500 text-sm">Este aluno ainda não possui atividades atribuídas.</div>
+              ) : (
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-xs font-medium">
+                      <th className="py-3.5 px-6">Atividade</th>
+                      <th className="py-3.5 px-6">Prazo</th>
+                      <th className="py-3.5 px-6">Status</th>
+                      <th className="py-3.5 px-6 text-right">Nota</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
+                    {boletim.map((item) => (
+                      <tr key={item.atividade_id} className="hover:bg-gray-50/60 transition-colors">
+                        <td className="py-3.5 px-6 font-medium text-gray-900">{item.titulo}</td>
+                        <td className="py-3.5 px-6 text-gray-500">
+                          {item.prazo ? (
+                            <span className="inline-flex items-center gap-1.5">
+                              <Clock className="w-3.5 h-3.5 text-gray-400" />
+                              {new Date(item.prazo + 'T12:00:00').toLocaleDateString('pt-BR')}
+                            </span>
+                          ) : '-'}
+                        </td>
+                        <td className="py-3.5 px-6">
+                          <span className={`inline-flex px-2.5 py-1 rounded-md text-xs font-medium ${
+                            item.status === 'Entregue' ? 'bg-[#f3efff] text-[#6c47e6]' :
+                            item.status === 'Pendente' ? 'bg-amber-50 text-amber-600' :
+                            'bg-red-50 text-red-600'
+                          }`}>
+                            {item.status}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-6 text-right font-semibold text-gray-900">
+                          {item.nota !== null ? item.nota : '-'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
 
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

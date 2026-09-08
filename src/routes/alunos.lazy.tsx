@@ -173,132 +173,147 @@ function AlunosPage() {
   )
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-300">
-      
-      {/* CABEÇALHO */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-6">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Gestão de Alunos</h1>
-          <p className="text-gray-500 mt-1">Controle de estudantes por nome completo e turma.</p>
-        </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all"
-        >
-          <UserPlus className="w-5 h-5" />
-          Novo Aluno
-        </button>
-      </div>
+    <div className="min-h-screen bg-gray-50/60">
+      <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
 
-      {/* BUSCA */}
-      <div className="flex items-center bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm max-w-md">
-        <Search className="w-5 h-5 text-gray-400 mr-3 shrink-0" />
-        <input
-          type="text"
-          placeholder="Buscar por nome completo..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
-        />
-      </div>
+        {/* Cabeçalho */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-7 border-b border-gray-200">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-[#3e4095] flex items-center justify-center shadow-sm shadow-[#3e4095]/20 shrink-0">
+              <User className="w-6 h-6 text-white" strokeWidth={2} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Gestão de Alunos</h1>
+              <p className="text-sm text-gray-500 mt-0.5">Controle de estudantes por nome completo e turma</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center justify-center gap-2 bg-[#3e4095] hover:bg-[#32346e] active:bg-[#282a58] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors self-start md:self-auto"
+          >
+            <UserPlus className="w-4 h-4" strokeWidth={2.5} />
+            Novo aluno
+          </button>
+        </div>
 
-      {/* LISTAGEM */}
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-[#6c47e6]" />
+        {/* Busca */}
+        <div className="relative w-full max-w-md">
+          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Buscar por nome completo..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full h-11 bg-white border border-gray-200 rounded-xl pl-10 pr-4 outline-none focus:border-[#3e4095] focus:ring-4 focus:ring-[#3e4095]/10 transition-all text-sm placeholder:text-gray-400"
+          />
         </div>
-      ) : filteredAlunos.length === 0 ? (
-        <div className="bg-white border border-dashed border-gray-300 rounded-2xl p-12 text-center space-y-3 shadow-sm">
-          <User className="w-12 h-12 text-gray-300 mx-auto" />
-          <h3 className="text-lg font-semibold text-gray-700">Nenhum aluno encontrado</h3>
-          <p className="text-gray-400 text-sm">Cadastre o primeiro aluno informando o nome e a turma.</p>
-        </div>
-      ) : (
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-gray-600 text-xs uppercase tracking-wider font-semibold">
-                <th className="py-4 px-6">Nome Completo</th>
-                <th className="py-4 px-6">Turma (Principal)</th>
-                <th className="py-4 px-6 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
-              {filteredAlunos.map((aluno) => (
-                <tr key={aluno.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="py-4 px-6 font-medium text-gray-900 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#eeeaff] text-[#6c47e6] flex items-center justify-center font-bold text-xs shrink-0">
-                      {aluno.nome.substring(0, 2).toUpperCase()}
-                    </div>
-                    {aluno.nome}
-                  </td>
-                  <td className="py-4 px-6 text-gray-600">
-                    {aluno.turmas.length > 0 ? (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-lg text-xs font-medium">
-                        <Layers className="w-3.5 h-3.5 text-gray-500" />
-                        {aluno.turmas[0].nome}
-                      </span>
-                    ) : (
-                      <span className="text-gray-400 italic text-xs">Sem turma vinculada</span>
-                    )}
-                  </td>
-                  <td className="py-4 px-6 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        onClick={() => handleEdit(aluno)}
-                        className="p-2 text-gray-400 hover:text-[#6c47e6] hover:bg-[#eeeaff] rounded-lg transition-colors"
-                        title="Editar Aluno"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteAluno(aluno.id)}
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Excluir Aluno"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+
+        {/* Listagem */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-24 text-gray-400">
+            <Loader2 className="w-7 h-7 animate-spin text-[#3e4095]" />
+            <p className="text-sm">Carregando alunos...</p>
+          </div>
+        ) : filteredAlunos.length === 0 ? (
+          <div className="bg-white border border-dashed border-gray-300 rounded-2xl py-20 px-6 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center mx-auto mb-4">
+              <User className="w-6 h-6 text-gray-300" />
+            </div>
+            <h3 className="text-base font-semibold text-gray-800">Nenhum aluno encontrado</h3>
+            <p className="text-gray-500 text-sm mt-1">Cadastre o primeiro aluno informando o nome e a turma.</p>
+          </div>
+        ) : (
+          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-xs font-medium">
+                  <th className="py-3.5 px-6">Nome completo</th>
+                  <th className="py-3.5 px-6">Turma (principal)</th>
+                  <th className="py-3.5 px-6 text-right">Ações</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
+                {filteredAlunos.map((aluno) => (
+                  <tr key={aluno.id} className="hover:bg-gray-50/60 transition-colors">
+                    <td className="py-3.5 px-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-[#eceafb] text-[#3e4095] flex items-center justify-center font-semibold text-xs shrink-0">
+                          {aluno.nome.substring(0, 2).toUpperCase()}
+                        </div>
+                        <span className="font-medium text-gray-900">{aluno.nome}</span>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-6">
+                      {aluno.turmas.length > 0 ? (
+                        <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-600 px-2.5 py-1 rounded-md text-xs font-medium">
+                          <Layers className="w-3.5 h-3.5" />
+                          {aluno.turmas[0].nome}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 italic text-xs">Sem turma vinculada</span>
+                      )}
+                    </td>
+                    <td className="py-3.5 px-6 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => handleEdit(aluno)}
+                          className="p-2 text-gray-400 hover:text-[#3e4095] hover:bg-[#eceafb] rounded-lg transition-colors"
+                          title="Editar aluno"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteAluno(aluno.id)}
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Excluir aluno"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
-      {/* MODAL */}
+      {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-6 relative animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center border-b pb-4">
-              <h2 className="text-xl font-bold text-gray-900">
-                {editingId ? 'Editar Aluno' : 'Cadastrar Novo Aluno'}
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl">
+              <h2 className="text-lg font-bold text-gray-900">
+                {editingId ? 'Editar aluno' : 'Cadastrar novo aluno'}
               </h2>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg">
-                <X className="w-5 h-5" />
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors"
+              >
+                <X className="w-4.5 h-4.5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Nome completo</label>
                 <input
                   type="text"
                   required
                   placeholder="Ex: João da Silva"
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] focus:border-[#845ef7] text-sm transition-all"
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#3e4095] focus:ring-4 focus:ring-[#3e4095]/10 transition-all text-sm bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Vincular a uma Turma</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Vincular a uma turma</label>
                 <select
                   value={turmaId}
                   onChange={(e) => setTurmaId(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#845ef7] focus:border-[#845ef7] text-sm bg-white cursor-pointer transition-all"
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#3e4095] focus:ring-4 focus:ring-[#3e4095]/10 transition-all text-sm bg-white cursor-pointer"
                 >
                   <option value="">Nenhuma turma (apenas cadastrar)</option>
                   {turmas.map((t) => (
@@ -309,21 +324,21 @@ function AlunosPage() {
                 </select>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t">
+              <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex items-center gap-2 px-5 py-2 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-all disabled:opacity-60"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#3e4095] hover:bg-[#32346e] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
                 >
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {saving ? 'Salvando...' : (editingId ? 'Salvar Alterações' : 'Salvar Aluno')}
+                  {saving ? 'Salvando...' : (editingId ? 'Salvar alterações' : 'Salvar aluno')}
                 </button>
               </div>
             </form>

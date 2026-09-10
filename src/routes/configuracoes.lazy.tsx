@@ -156,28 +156,28 @@ function ConfiguracoesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/60">
-      <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-8">
+      <div className="p-4 sm:p-6 md:p-10 max-w-4xl mx-auto space-y-6 md:space-y-8">
 
         {/* Cabeçalho */}
-        <div className="flex items-center gap-4 pb-7 border-b border-gray-200">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 pb-6 md:pb-7 border-b border-gray-200">
           <div className="w-12 h-12 rounded-2xl bg-[#6c47e6] flex items-center justify-center shadow-sm shadow-[#6c47e6]/20 shrink-0">
             <Settings className="w-6 h-6 text-white" strokeWidth={2} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Configurações</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Gerencie suas informações pessoais e preferências do sistema</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Configurações</h1>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Gerencie suas informações pessoais e preferências do sistema</p>
           </div>
         </div>
 
         {/* Bloco: perfil */}
-        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2.5">
+        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2.5">
             <User className="w-4 h-4 text-gray-400" />
             <h2 className="text-sm font-semibold text-gray-800">Perfil profissional</h2>
           </div>
 
-          <form onSubmit={handleSave} className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <form onSubmit={handleSave} className="p-4 sm:p-6 space-y-5 sm:space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Nome de exibição</label>
                 <input
@@ -217,11 +217,11 @@ function ConfiguracoesPage() {
               </div>
             </div>
 
-            <div className="pt-2 flex justify-end">
+            <div className="pt-4 sm:pt-2 flex flex-col sm:flex-row justify-end border-t border-gray-100 sm:border-0 mt-4 sm:mt-0">
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors disabled:opacity-70"
+                className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors disabled:opacity-70"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 {saving ? 'Salvando...' : 'Salvar alterações'}
@@ -232,17 +232,17 @@ function ConfiguracoesPage() {
 
         {/* Bloco: gerenciamento de equipe (apenas admin) */}
         {cargo === 'admin' && (
-          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2.5">
+          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2.5">
               <Users className="w-4 h-4 text-gray-400" />
               <h2 className="text-sm font-semibold text-gray-800">Gerenciamento de equipe</h2>
             </div>
 
-            <div className="p-6 space-y-8">
+            <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
               {/* Formulário de nova conta */}
               <form onSubmit={handleCreateAccount} className="space-y-4">
                 <h3 className="text-sm font-semibold text-gray-900 pb-2 border-b border-gray-100">Cadastrar novo professor</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   <input
                     required
                     type="text"
@@ -277,11 +277,11 @@ function ConfiguracoesPage() {
                     <option value="admin">Coordenador / admin</option>
                   </select>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex flex-col sm:flex-row justify-end">
                   <button
                     type="submit"
                     disabled={creating}
-                    className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors disabled:opacity-70"
+                    className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors disabled:opacity-70"
                   >
                     {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                     Criar conta
@@ -292,11 +292,11 @@ function ConfiguracoesPage() {
               {/* Lista de equipe e redefinição de senha */}
               <div>
                 <h3 className="text-sm font-semibold text-gray-900 pb-2 mb-4 border-b border-gray-100">Contas ativas</h3>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {equipe.map((membro) => (
                     <div
                       key={membro.id}
-                      className="flex justify-between items-center p-3.5 bg-gray-50 border border-gray-100 rounded-xl"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 bg-gray-50 border border-gray-100 rounded-xl"
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-8 h-8 rounded-full bg-[#f3efff] text-[#6c47e6] flex items-center justify-center font-semibold text-xs shrink-0">
@@ -304,9 +304,9 @@ function ConfiguracoesPage() {
                         </div>
                         <div className="min-w-0">
                           <p className="text-sm font-medium text-gray-900 truncate">{membro.nome}</p>
-                          <p className="text-xs text-gray-500 flex items-center gap-1.5">
+                          <p className="text-xs text-gray-500 flex items-center gap-1.5 flex-wrap">
                             <span className="truncate">{membro.email}</span>
-                            <span className="text-gray-300">•</span>
+                            <span className="text-gray-300 hidden sm:inline">•</span>
                             <span className="text-[11px] font-medium text-[#6c47e6]">{membro.cargo}</span>
                           </p>
                         </div>
@@ -314,7 +314,7 @@ function ConfiguracoesPage() {
                       <button
                         onClick={() => handleResetPassword(membro.email)}
                         disabled={resetting === membro.email}
-                        className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-[#6c47e6] bg-white border border-gray-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 shrink-0"
+                        className="w-full sm:w-auto inline-flex justify-center items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-[#6c47e6] bg-white border border-gray-200 px-3 py-2 sm:py-1.5 rounded-lg transition-colors disabled:opacity-50 shrink-0"
                       >
                         {resetting === membro.email ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Key className="w-3.5 h-3.5" />}
                         Redefinir senha

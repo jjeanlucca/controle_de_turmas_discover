@@ -238,22 +238,22 @@ function TurmasPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/60">
-      <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
+      <div className="p-4 sm:p-6 md:p-10 max-w-7xl mx-auto space-y-6 md:space-y-8">
 
         {/* Cabeçalho */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-7 border-b border-gray-200">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 md:pb-7 border-b border-gray-200">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-[#6c47e6] flex items-center justify-center shadow-sm shadow-[#6c47e6]/20 shrink-0">
               <Layers className="w-6 h-6 text-white" strokeWidth={2} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Controle de Turmas</h1>
-              <p className="text-sm text-gray-500 mt-0.5">Gerencie as turmas e os alunos matriculados na Escola Discover</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Controle de Turmas</h1>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Gerencie as turmas e os alunos matriculados na Escola Discover</p>
             </div>
           </div>
           <button
             onClick={openCreateModal}
-            className="inline-flex items-center justify-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors self-start md:self-auto"
+            className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors"
           >
             <Plus className="w-4 h-4" strokeWidth={2.5} />
             Nova turma
@@ -262,12 +262,12 @@ function TurmasPage() {
 
         {/* Listagem de turmas */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-24 text-gray-400">
+          <div className="flex flex-col items-center justify-center gap-3 py-16 md:py-24 text-gray-400">
             <Loader2 className="w-7 h-7 animate-spin text-[#6c47e6]" />
             <p className="text-sm">Carregando turmas...</p>
           </div>
         ) : turmas.length === 0 ? (
-          <div className="bg-white border border-dashed border-gray-300 rounded-2xl py-20 px-6 text-center">
+          <div className="bg-white border border-dashed border-gray-300 rounded-2xl py-12 md:py-20 px-6 text-center">
             <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center mx-auto mb-4">
               <Layers className="w-6 h-6 text-gray-300" />
             </div>
@@ -275,11 +275,11 @@ function TurmasPage() {
             <p className="text-gray-500 text-sm mt-1">Clique em "Nova turma" para começar.</p>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {turmas.map((turma) => (
               <div
                 key={turma.id}
-                className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 flex flex-col hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-xl bg-[#f3efff] flex items-center justify-center shrink-0">
@@ -291,10 +291,10 @@ function TurmasPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-2 mt-5 pt-4 border-t border-gray-100">
+                <div className="flex flex-col sm:flex-row gap-2 mt-4 sm:mt-5 pt-4 border-t border-gray-100">
                   <button
                     onClick={() => openAlunosModal(turma)}
-                    className="flex-1 inline-flex justify-center items-center gap-1.5 bg-[#f3efff] hover:bg-[#e3d9ff] text-[#6c47e6] rounded-xl py-2 transition-colors text-xs font-medium"
+                    className="w-full sm:flex-1 inline-flex justify-center items-center gap-1.5 bg-[#f3efff] hover:bg-[#e3d9ff] text-[#6c47e6] rounded-xl py-2 transition-colors text-xs font-medium"
                     title="Gerenciar alunos"
                   >
                     <Users className="w-3.5 h-3.5" />
@@ -303,7 +303,7 @@ function TurmasPage() {
 
                   <button
                     onClick={() => openEditModal(turma)}
-                    className="flex-1 inline-flex justify-center items-center gap-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-xl py-2 transition-colors text-xs font-medium border border-gray-200"
+                    className="w-full sm:flex-1 inline-flex justify-center items-center gap-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-xl py-2 transition-colors text-xs font-medium border border-gray-200"
                     title="Editar turma"
                   >
                     <Pencil className="w-3.5 h-3.5" />
@@ -312,7 +312,7 @@ function TurmasPage() {
 
                   <button
                     onClick={() => handleDeleteTurma(turma.id)}
-                    className="flex-1 inline-flex justify-center items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl py-2 transition-colors text-xs font-medium"
+                    className="w-full sm:flex-1 inline-flex justify-center items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl py-2 transition-colors text-xs font-medium"
                     title="Excluir turma"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -328,8 +328,8 @@ function TurmasPage() {
       {/* Modal 1: criar/editar turma */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex justify-center items-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
-            <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl z-10">
               <h2 className="text-lg font-bold text-gray-900">{editingTurma ? "Editar turma" : "Nova turma"}</h2>
               <button
                 onClick={closeModal}
@@ -339,7 +339,7 @@ function TurmasPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSaveTurma} className="p-6 space-y-5">
+            <form onSubmit={handleSaveTurma} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Nome da turma</label>
                 <input
@@ -362,18 +362,18 @@ function TurmasPage() {
                   className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm bg-white"
                 />
               </div>
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 sm:pt-2 border-t sm:border-t-0 border-gray-100 mt-2">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-center"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
                 >
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {saving ? "Salvando..." : editingTurma ? "Atualizar" : "Salvar"}
@@ -389,7 +389,7 @@ function TurmasPage() {
         <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex justify-center items-center p-4 z-50">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg flex flex-col max-h-[85vh]">
 
-            <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100 shrink-0">
+            <div className="flex justify-between items-center px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 shrink-0">
               <div>
                 <h2 className="text-lg font-bold text-gray-900">Alunos matriculados</h2>
                 <p className="text-sm text-[#6c47e6] font-medium mt-0.5">{selectedTurma.nome} · Ano {selectedTurma.ano_letivo}</p>
@@ -402,20 +402,20 @@ function TurmasPage() {
               </button>
             </div>
 
-            <div className="p-6 space-y-5 overflow-y-auto flex-1">
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto flex-1">
               {/* Adicionar aluno rápido */}
-              <form onSubmit={handleAddAluno} className="flex gap-2">
+              <form onSubmit={handleAddAluno} className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="text"
                   placeholder="Nome completo do novo aluno..."
                   value={novoAlunoNome}
                   onChange={(e) => setNovoAlunoNome(e.target.value)}
-                  className="flex-1 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all"
+                  className="w-full flex-1 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all"
                 />
                 <button
                   type="submit"
                   disabled={addingAluno || !novoAlunoNome.trim()}
-                  className="inline-flex items-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
                 >
                   {addingAluno ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
                   Matricular
@@ -438,10 +438,10 @@ function TurmasPage() {
                       key={aluno.id}
                       className="flex justify-between items-center bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 hover:bg-gray-100 transition-colors"
                     >
-                      <span className="text-sm font-medium text-gray-700">{aluno.nome}</span>
+                      <span className="text-sm font-medium text-gray-700 truncate mr-2">{aluno.nome}</span>
                       <button
                         onClick={() => handleRemoveAluno(aluno.id)}
-                        className="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+                        className="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition-colors shrink-0"
                         title="Remover da turma"
                       >
                         <UserMinus className="w-4 h-4" />
@@ -452,10 +452,10 @@ function TurmasPage() {
               </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-gray-100 flex justify-end shrink-0">
+            <div className="px-4 sm:px-6 py-4 border-t border-gray-100 flex justify-end shrink-0">
               <button
                 onClick={closeAlunosModal}
-                className="px-5 py-2.5 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl transition-colors"
+                className="w-full sm:w-auto px-5 py-2.5 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl transition-colors text-center"
               >
                 Fechar
               </button>

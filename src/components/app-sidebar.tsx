@@ -9,10 +9,10 @@ import {
   ListChecks,
   BarChart3,
   Settings,
-  GraduationCap,
   LogOut,
   Layers,
-  TrendingUp // <-- Ícone novo importado para o Desempenho
+  TrendingUp,
+  Menu // <-- Ícone do hambúrguer
 } from "lucide-react";
 
 import {
@@ -26,6 +26,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
+  useSidebar // <-- Hook importado para controlar o abrir/fechar
 } from "./ui/sidebar";
 
 const nav = [
@@ -34,7 +35,7 @@ const nav = [
   { title: "Turmas", url: "/turmas", icon: Layers },
   { title: "Biblioteca", url: "/biblioteca", icon: BookOpen },
   { title: "Controle de Tarefas", url: "/tarefas", icon: ListChecks },
-  { title: "Desempenho", url: "/boletim", icon: TrendingUp }, // <-- Adicionado aqui!
+  { title: "Desempenho", url: "/boletim", icon: TrendingUp },
   { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
   { title: "Configurações", url: "/configuracoes", icon: Settings },
 ] as const;
@@ -43,6 +44,9 @@ export function AppSidebar() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const navigate = useNavigate();
   const [perfil, setPerfil] = useState<{ nome: string; cargo: string; email: string } | null>(null);
+  
+  // Pegamos a função de abrir e fechar a sidebar
+  const { toggleSidebar } = useSidebar();
 
   const isActive = (url: string) =>
     url === "/" ? pathname === "/" : pathname === url || pathname.startsWith(url + "/");
@@ -93,18 +97,37 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       
       <SidebarHeader className="border-b border-slate-200">
-        <div className="flex items-center gap-3 px-2 py-3">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#6c47e6] text-white shadow-sm">
-            <GraduationCap className="h-5 w-5" />
+        <div className="flex items-center justify-between px-2 py-3">
+          
+          <div className="flex items-center gap-3">
+            {/* Logo inserida aqui */}
+            <div className="flex h-9 shrink-0 items-center justify-center">
+              <img 
+                src="/img/logo_azul.png" 
+                alt="Logo Discover" 
+                className="h-8 w-auto object-contain"
+              />
+            </div>
+            
+            <div className="min-w-0 group-data-[collapsible=icon]:hidden">
+              <p className="truncate text-sm font-semibold leading-none text-slate-900">
+                Discover
+              </p>
+              <p className="truncate text-xs text-slate-500 mt-0.5">
+                Escola de Tecnologia
+              </p>
+            </div>
           </div>
-          <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-            <p className="truncate text-sm font-semibold leading-none text-slate-900">
-              Discover
-            </p>
-            <p className="truncate text-xs text-slate-500 mt-1">
-              Escola de Tecnologia
-            </p>
-          </div>
+
+          {/* Botão Hambúrguer para abrir/fechar */}
+          <button 
+            onClick={toggleSidebar}
+            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors group-data-[collapsible=icon]:hidden"
+            title="Recolher menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+
         </div>
       </SidebarHeader>
 

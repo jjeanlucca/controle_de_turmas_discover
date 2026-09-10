@@ -45,12 +45,12 @@ function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Elementos decorativos de fundo */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-[#e0d4ff] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
+      <div className="w-full sm:mx-auto sm:max-w-md relative z-10">
         <div className="flex justify-center">
           <div className="w-16 h-16 bg-[#6c47e6] rounded-2xl flex items-center justify-center shadow-lg shadow-[#6c47e6]/20">
             <GraduationCap className="w-8 h-8 text-white" />
@@ -64,8 +64,8 @@ function LoginPage() {
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <div className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100">
+      <div className="mt-8 w-full sm:mx-auto sm:max-w-md relative z-10">
+        <div className="bg-white py-8 px-6 shadow-xl shadow-gray-200/50 rounded-2xl sm:px-10 border border-gray-100 mx-auto w-full max-w-[400px] sm:max-w-none">
           <form className="space-y-5" onSubmit={handleLogin}>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">

@@ -241,22 +241,22 @@ function TarefasPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/60">
-      <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
+      <div className="p-4 sm:p-6 md:p-10 max-w-7xl mx-auto space-y-6 md:space-y-8">
 
         {/* Cabeçalho */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-7 border-b border-gray-200">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 md:pb-7 border-b border-gray-200">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-[#6c47e6] flex items-center justify-center shadow-sm shadow-[#6c47e6]/20 shrink-0">
               <ListChecks className="w-6 h-6 text-white" strokeWidth={2} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Controle de Tarefas</h1>
-              <p className="text-sm text-gray-500 mt-0.5">Gerencie prazos, tipos de atividades e lance notas nas planilhas</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Controle de Tarefas</h1>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Gerencie prazos, tipos de atividades e lance notas nas planilhas</p>
             </div>
           </div>
           <button
             onClick={openTaskModal}
-            className="inline-flex items-center justify-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors self-start md:self-auto"
+            className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors"
           >
             <Plus className="w-4 h-4" strokeWidth={2.5} />
             Nova tarefa
@@ -291,12 +291,12 @@ function TarefasPage() {
 
         {/* Lista de tarefas */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-24 text-gray-400">
+          <div className="flex flex-col items-center justify-center gap-3 py-16 md:py-24 text-gray-400">
             <Loader2 className="w-7 h-7 animate-spin text-[#6c47e6]" />
             <p className="text-sm">Carregando tarefas...</p>
           </div>
         ) : atividadesFiltradas.length === 0 ? (
-          <div className="bg-white border border-dashed border-gray-300 rounded-2xl py-20 px-6 text-center">
+          <div className="bg-white border border-dashed border-gray-300 rounded-2xl py-12 md:py-20 px-6 text-center">
             <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center mx-auto mb-4">
               <ListChecks className="w-6 h-6 text-gray-300" />
             </div>
@@ -304,7 +304,7 @@ function TarefasPage() {
             <p className="text-gray-500 text-sm mt-1">Cadastre uma nova tarefa para começar o acompanhamento.</p>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {atividadesFiltradas.map((ativ) => {
               const typeConfig = getTypeConfig(ativ.tipo);
               const TypeIcon = typeConfig.icon;
@@ -312,7 +312,7 @@ function TarefasPage() {
               return (
                 <div
                   key={ativ.id}
-                  className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col justify-between hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                  className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <div>
                     <div className="flex justify-between items-start gap-2">
@@ -353,18 +353,18 @@ function TarefasPage() {
       {/* Modal: criação de tarefa */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex justify-center items-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
-            <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl z-10">
               <h2 className="text-lg font-bold text-gray-900">Nova tarefa</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors"
               >
-                <X className="w-4.5 h-4.5" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveTask} className="p-6 space-y-5">
+            <form onSubmit={handleSaveTask} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Título da atividade</label>
                 <input
@@ -390,7 +390,7 @@ function TarefasPage() {
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Turma</label>
                   <select
@@ -414,18 +414,18 @@ function TarefasPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 sm:pt-2 border-t sm:border-t-0 border-gray-100 mt-2">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-center"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={savingTask}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
                 >
                   {savingTask && <Loader2 className="w-4 h-4 animate-spin" />}
                   Criar tarefa
@@ -441,23 +441,23 @@ function TarefasPage() {
         <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex justify-center items-center p-4 z-50">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl flex flex-col max-h-[90vh]">
 
-            <div className="flex justify-between items-start px-6 py-5 border-b border-gray-100 shrink-0">
+            <div className="flex justify-between items-start px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 shrink-0">
               <div>
                 <span className="inline-flex bg-gray-100 text-gray-600 text-[11px] font-medium px-2 py-0.5 rounded-md mb-1.5">
                   {atividadeSelecionada.tipo}
                 </span>
-                <h2 className="text-lg font-bold text-gray-900">{atividadeSelecionada.titulo}</h2>
+                <h2 className="text-lg font-bold text-gray-900 leading-tight">{atividadeSelecionada.titulo}</h2>
                 <p className="text-sm text-[#6c47e6] font-medium mt-0.5">Turma: {atividadeSelecionada.turmas?.nome}</p>
               </div>
               <button
                 onClick={() => setIsPlanilhaOpen(false)}
-                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors shrink-0"
+                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors shrink-0 ml-4"
               >
-                <X className="w-4.5 h-4.5" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto min-h-[300px] px-6">
+            <div className="flex-1 overflow-y-auto min-h-[300px] px-4 sm:px-6">
               {loadingPlanilha ? (
                 <div className="flex justify-center items-center h-full py-16">
                   <Loader2 className="w-7 h-7 animate-spin text-[#6c47e6]" />
@@ -465,59 +465,61 @@ function TarefasPage() {
               ) : alunosDaTurma.length === 0 ? (
                 <div className="text-center text-gray-500 text-sm py-16">Nenhum aluno matriculado nesta turma.</div>
               ) : (
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-white border-b border-gray-200 text-gray-500 text-xs font-medium sticky top-0 z-10">
-                      <th className="py-3 px-2">Aluno</th>
-                      <th className="py-3 px-2 w-40">Status</th>
-                      <th className="py-3 px-2 w-28 text-right">Nota / visto</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
-                    {alunosDaTurma.map(aluno => (
-                      <tr key={aluno.id} className="hover:bg-gray-50/60 transition-colors">
-                        <td className="py-3 px-2 font-medium text-gray-900">{aluno.nome}</td>
-                        <td className="py-3 px-2">
-                          <select
-                            value={notas[aluno.id]?.status || 'Pendente'}
-                            onChange={(e) => handleUpdateNota(aluno.id, 'status', e.target.value)}
-                            className={`w-full border-0 rounded-lg px-3 py-1.5 outline-none font-medium text-xs cursor-pointer appearance-none focus:ring-4 focus:ring-[#6c47e6]/10 ${getStatusStyles(notas[aluno.id]?.status || 'Pendente')}`}
-                          >
-                            <option value="Pendente">⌛ Pendente</option>
-                            <option value="Entregue">✅ Entregue</option>
-                            <option value="Atrasado">⚠️ Atrasado</option>
-                          </select>
-                        </td>
-                        <td className="py-3 px-2 text-right">
-                          <input
-                            type="number"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            placeholder="-"
-                            value={notas[aluno.id]?.nota ?? ''}
-                            onChange={(e) => handleUpdateNota(aluno.id, 'nota', e.target.value)}
-                            className="w-20 border border-gray-200 rounded-lg px-2 py-1.5 text-center text-sm font-semibold text-gray-900 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all"
-                          />
-                        </td>
+                <div className="w-full overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[500px]">
+                    <thead>
+                      <tr className="bg-white border-b border-gray-200 text-gray-500 text-xs font-medium sticky top-0 z-10">
+                        <th className="py-3 px-2">Aluno</th>
+                        <th className="py-3 px-2 w-40">Status</th>
+                        <th className="py-3 px-2 w-28 text-right">Nota / visto</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
+                      {alunosDaTurma.map(aluno => (
+                        <tr key={aluno.id} className="hover:bg-gray-50/60 transition-colors">
+                          <td className="py-3 px-2 font-medium text-gray-900">{aluno.nome}</td>
+                          <td className="py-3 px-2">
+                            <select
+                              value={notas[aluno.id]?.status || 'Pendente'}
+                              onChange={(e) => handleUpdateNota(aluno.id, 'status', e.target.value)}
+                              className={`w-full border-0 rounded-lg px-3 py-1.5 outline-none font-medium text-xs cursor-pointer appearance-none focus:ring-4 focus:ring-[#6c47e6]/10 ${getStatusStyles(notas[aluno.id]?.status || 'Pendente')}`}
+                            >
+                              <option value="Pendente">⌛ Pendente</option>
+                              <option value="Entregue">✅ Entregue</option>
+                              <option value="Atrasado">⚠️ Atrasado</option>
+                            </select>
+                          </td>
+                          <td className="py-3 px-2 text-right">
+                            <input
+                              type="number"
+                              min="0"
+                              max="10"
+                              step="0.1"
+                              placeholder="-"
+                              value={notas[aluno.id]?.nota ?? ''}
+                              onChange={(e) => handleUpdateNota(aluno.id, 'nota', e.target.value)}
+                              className="w-20 border border-gray-200 rounded-lg px-2 py-1.5 text-center text-sm font-semibold text-gray-900 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all"
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
 
-            <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 shrink-0">
+            <div className="px-4 sm:px-6 py-4 border-t border-gray-100 flex flex-col-reverse sm:flex-row justify-end gap-3 shrink-0">
               <button
                 onClick={() => setIsPlanilhaOpen(false)}
-                className="px-5 py-2.5 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl transition-colors"
+                className="w-full sm:w-auto px-5 py-2.5 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl transition-colors text-center"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSavePlanilha}
                 disabled={savingPlanilha || loadingPlanilha}
-                className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium bg-[#6c47e6] hover:bg-[#5533c7] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
               >
                 {savingPlanilha ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 Salvar planilha

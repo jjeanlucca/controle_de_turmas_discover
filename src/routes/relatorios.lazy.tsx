@@ -108,29 +108,29 @@ function RelatoriosPage() {
 
   return (
     <div className="relative min-h-screen bg-gray-50/60 overflow-hidden">
-      <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
+      <div className="p-4 sm:p-6 md:p-10 max-w-7xl mx-auto space-y-6 md:space-y-8">
 
         {/* Cabeçalho */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-7 border-b border-gray-200">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 md:pb-7 border-b border-gray-200">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-[#6c47e6] flex items-center justify-center shadow-sm shadow-[#6c47e6]/20 shrink-0">
               <BarChart3 className="w-6 h-6 text-white" strokeWidth={2} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Relatórios de Desempenho</h1>
-              <p className="text-sm text-gray-500 mt-0.5">Gere relatórios individuais para acompanhamento dos alunos</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Relatórios de Desempenho</h1>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Gere relatórios individuais para acompanhamento dos alunos</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
             {loadingDados ? (
-              <div className="flex items-center gap-2 text-sm text-gray-400 px-2">
+              <div className="flex items-center justify-center gap-2 text-sm text-gray-400 px-2 h-11">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 Carregando alunos...
               </div>
             ) : (
               <select
-                className="h-11 border border-gray-200 rounded-xl px-3.5 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm text-gray-700 bg-white w-full md:w-64 cursor-pointer"
+                className="h-11 border border-gray-200 rounded-xl px-3.5 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm text-gray-700 bg-white w-full sm:w-64 cursor-pointer truncate"
                 value={alunoSelecionado?.id || ''}
                 onChange={handleSelectChange}
               >
@@ -146,7 +146,7 @@ function RelatoriosPage() {
             <button
               onClick={handleExportPDF}
               disabled={isExporting || estudantes.length === 0}
-              className="inline-flex items-center justify-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] text-white px-5 py-2.5 h-11 rounded-xl font-medium text-sm shadow-sm transition-colors disabled:opacity-60 whitespace-nowrap shrink-0"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] text-white px-5 py-2.5 h-11 rounded-xl font-medium text-sm shadow-sm transition-colors disabled:opacity-60 whitespace-nowrap shrink-0"
             >
               {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
               {isExporting ? 'Gerando...' : 'Baixar boletim'}
@@ -155,33 +155,33 @@ function RelatoriosPage() {
         </div>
 
         {/* Painel resumo */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-start gap-4 hover:border-gray-300 hover:shadow-md transition-all duration-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 flex items-start gap-4 hover:border-gray-300 hover:shadow-md transition-all duration-200">
             <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
               <TrendingUp className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Média da turma</p>
+              <p className="text-xs sm:text-sm text-gray-500">Média da turma</p>
               <h3 className="text-2xl font-bold text-gray-900 mt-1">8.4</h3>
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-start gap-4 hover:border-gray-300 hover:shadow-md transition-all duration-200">
+          <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 flex items-start gap-4 hover:border-gray-300 hover:shadow-md transition-all duration-200">
             <div className="w-11 h-11 rounded-xl bg-[#f3efff] text-[#6c47e6] flex items-center justify-center shrink-0">
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Meus alunos</p>
+              <p className="text-xs sm:text-sm text-gray-500">Meus alunos</p>
               <h3 className="text-2xl font-bold text-gray-900 mt-1">{estudantes.length}</h3>
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-start gap-4 hover:border-gray-300 hover:shadow-md transition-all duration-200">
+          <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 flex items-start gap-4 hover:border-gray-300 hover:shadow-md transition-all duration-200 sm:col-span-2 md:col-span-1">
             <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Tarefas pendentes</p>
+              <p className="text-xs sm:text-sm text-gray-500">Tarefas pendentes</p>
               <h3 className="text-2xl font-bold text-gray-900 mt-1">3</h3>
             </div>
           </div>

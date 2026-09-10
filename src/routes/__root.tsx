@@ -17,7 +17,15 @@ function RootLayout() {
   const [isLoading, setIsLoading] = useState(true)
   const [userRole, setUserRole] = useState<string | null>(null)
 
+  // ESTADOS DE CONTROLE ADICIONADOS PARA RESPONSIVIDADE
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
   const isLoginPage = location.pathname === '/login'
+
+  // FUNÇÃO DE BACKEND: Escuta a rota. Se mudar de página, fecha a gaveta no celular.
+  useEffect(() => {
+    setIsMobileMenuOpen(false)
+  }, [location.pathname])
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -88,7 +96,8 @@ function RootLayout() {
       {isLoginPage ? (
         <Outlet />
       ) : (
-        <SidebarProvider>
+        /* PROPS DE ESTADO INJETADAS AQUI (open e onOpenChange) */
+        <SidebarProvider open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <div className="flex min-h-screen w-full bg-gray-50 text-gray-900 font-sans">
             {/* Você pode passar o userRole para a sidebar depois se quiser esconder links nela */}
             <AppSidebar />

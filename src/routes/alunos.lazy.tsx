@@ -174,22 +174,22 @@ function AlunosPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/60">
-      <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
+      <div className="p-4 sm:p-6 md:p-10 max-w-7xl mx-auto space-y-6 md:space-y-8">
 
         {/* Cabeçalho */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-7 border-b border-gray-200">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 md:pb-7 border-b border-gray-200">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-[#3e4095] flex items-center justify-center shadow-sm shadow-[#3e4095]/20 shrink-0">
               <User className="w-6 h-6 text-white" strokeWidth={2} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Gestão de Alunos</h1>
-              <p className="text-sm text-gray-500 mt-0.5">Controle de estudantes por nome completo e turma</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Gestão de Alunos</h1>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Controle de estudantes por nome completo e turma</p>
             </div>
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 bg-[#3e4095] hover:bg-[#32346e] active:bg-[#282a58] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors self-start md:self-auto"
+            className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-[#3e4095] hover:bg-[#32346e] active:bg-[#282a58] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors"
           >
             <UserPlus className="w-4 h-4" strokeWidth={2.5} />
             Novo aluno
@@ -197,7 +197,7 @@ function AlunosPage() {
         </div>
 
         {/* Busca */}
-        <div className="relative w-full max-w-md">
+        <div className="relative w-full md:max-w-md">
           <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
@@ -215,7 +215,7 @@ function AlunosPage() {
             <p className="text-sm">Carregando alunos...</p>
           </div>
         ) : filteredAlunos.length === 0 ? (
-          <div className="bg-white border border-dashed border-gray-300 rounded-2xl py-20 px-6 text-center">
+          <div className="bg-white border border-dashed border-gray-300 rounded-2xl py-12 md:py-20 px-6 text-center">
             <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center mx-auto mb-4">
               <User className="w-6 h-6 text-gray-300" />
             </div>
@@ -223,58 +223,61 @@ function AlunosPage() {
             <p className="text-gray-500 text-sm mt-1">Cadastre o primeiro aluno informando o nome e a turma.</p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-xs font-medium">
-                  <th className="py-3.5 px-6">Nome completo</th>
-                  <th className="py-3.5 px-6">Turma (principal)</th>
-                  <th className="py-3.5 px-6 text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
-                {filteredAlunos.map((aluno) => (
-                  <tr key={aluno.id} className="hover:bg-gray-50/60 transition-colors">
-                    <td className="py-3.5 px-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#eceafb] text-[#3e4095] flex items-center justify-center font-semibold text-xs shrink-0">
-                          {aluno.nome.substring(0, 2).toUpperCase()}
-                        </div>
-                        <span className="font-medium text-gray-900">{aluno.nome}</span>
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-6">
-                      {aluno.turmas.length > 0 ? (
-                        <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-600 px-2.5 py-1 rounded-md text-xs font-medium">
-                          <Layers className="w-3.5 h-3.5" />
-                          {aluno.turmas[0].nome}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400 italic text-xs">Sem turma vinculada</span>
-                      )}
-                    </td>
-                    <td className="py-3.5 px-6 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() => handleEdit(aluno)}
-                          className="p-2 text-gray-400 hover:text-[#3e4095] hover:bg-[#eceafb] rounded-lg transition-colors"
-                          title="Editar aluno"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteAluno(aluno.id)}
-                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Excluir aluno"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
+          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+            {/* Wrapper para rolagem horizontal no celular */}
+            <div className="w-full overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[550px]">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-xs font-medium">
+                    <th className="py-3.5 px-4 sm:px-6">Nome completo</th>
+                    <th className="py-3.5 px-4 sm:px-6">Turma (principal)</th>
+                    <th className="py-3.5 px-4 sm:px-6 text-right">Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
+                  {filteredAlunos.map((aluno) => (
+                    <tr key={aluno.id} className="hover:bg-gray-50/60 transition-colors">
+                      <td className="py-3.5 px-4 sm:px-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-[#eceafb] text-[#3e4095] flex items-center justify-center font-semibold text-xs shrink-0">
+                            {aluno.nome.substring(0, 2).toUpperCase()}
+                          </div>
+                          <span className="font-medium text-gray-900 whitespace-nowrap">{aluno.nome}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 sm:px-6">
+                        {aluno.turmas.length > 0 ? (
+                          <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-600 px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap">
+                            <Layers className="w-3.5 h-3.5 shrink-0" />
+                            {aluno.turmas[0].nome}
+                          </span>
+                        ) : (
+                          <span className="text-gray-400 italic text-xs whitespace-nowrap">Sem turma</span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 sm:px-6 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => handleEdit(aluno)}
+                            className="p-2 text-gray-400 hover:text-[#3e4095] hover:bg-[#eceafb] rounded-lg transition-colors"
+                            title="Editar aluno"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteAluno(aluno.id)}
+                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Excluir aluno"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
@@ -283,7 +286,7 @@ function AlunosPage() {
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl">
+            <div className="flex justify-between items-center px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl z-10">
               <h2 className="text-lg font-bold text-gray-900">
                 {editingId ? 'Editar aluno' : 'Cadastrar novo aluno'}
               </h2>
@@ -291,11 +294,11 @@ function AlunosPage() {
                 onClick={closeModal}
                 className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors"
               >
-                <X className="w-4.5 h-4.5" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-5">
+            <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Nome completo</label>
                 <input
@@ -324,18 +327,19 @@ function AlunosPage() {
                 </select>
               </div>
 
-              <div className="flex justify-end gap-3 pt-2">
+              {/* Botões ajustados para mobile: empilhados invertidos no celular e lado a lado no desktop */}
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 sm:pt-2 border-t sm:border-t-0 border-gray-100 mt-2">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-center"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#3e4095] hover:bg-[#32346e] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#3e4095] hover:bg-[#32346e] text-white rounded-xl shadow-sm transition-colors disabled:opacity-60"
                 >
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {saving ? 'Salvando...' : (editingId ? 'Salvar alterações' : 'Salvar aluno')}

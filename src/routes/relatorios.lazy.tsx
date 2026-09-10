@@ -18,12 +18,22 @@ type Estudante = {
   ano: number
 }
 
+type NotaAluno = {
+  titulo: string
+  nota: number | null
+  status: string
+}
+
 function RelatoriosPage() {
   const boletimRef = useRef<HTMLDivElement>(null)
   const [isExporting, setIsExporting] = useState(false)
   const [estudantes, setEstudantes] = useState<Estudante[]>([])
   const [alunoSelecionado, setAlunoSelecionado] = useState<Estudante | null>(null)
   const [loadingDados, setLoadingDados] = useState(true)
+  
+  // Novos estados para carregar as notas reais do aluno selecionado
+  const [notasAluno, setNotasAluno] = useState<NotaAluno[]>([])
+  const [loadingNotas, setLoadingNotas] = useState(false)
 
   // 1. Busca os alunos reais associados ao professor logado
   useEffect(() => {
@@ -73,6 +83,68 @@ function RelatoriosPage() {
     fetchAlunos()
   }, [])
 
+  // 2. Busca as notas REAIS do aluno sempre que ele for selecionado
+  useEffect(() => {
+    const fetchNotasDoAluno = async () => {
+      if (!alunoSelecionado) {
+        setNotasAluno([])
+        return
+      }
+      setLoadingNotas(true)
+
+      try {
+        // A. Descobrir de quais turmas o aluno participa
+        const { data: turmasAluno } = await supabase
+          .from('turma_alunos')
+          .select('turma_id')
+          .eq('aluno_id', alunoSelecionado.id)
+        
+        const turmaIds = turmasAluno?.map((t: any) => t.turma_id) || []
+
+        // B. Buscar as atividades
+        let query = supabase.from('atividades').select('*')
+        if (turmaIds.length > 0) {
+          query = query.or(`turma_id.in.(${turmaIds.join(',')}),turma_id.is.null`)
+        } else {
+          query = query.is('turma_id', null)
+        }
+        const { data: atividadesData } = await query
+
+        // C. Buscar as entregas/notas
+        const { data: entregasData } = await supabase
+          .from('entregas')
+          .select('*')
+          .eq('aluno_id', alunoSelecionado.id)
+
+        // D. Cruzar os dados (Mesma inteligência do Boletim)
+        const hoje = new Date()
+        const notasFormatadas = atividadesData?.map((ativ: any) => {
+          const entrega = entregasData?.find((e: any) => e.atividade_id === ativ.id)
+          let status = entrega?.status || 'Pendente'
+          
+          if (!entrega && ativ.prazo) {
+            const prazoDate = new Date(ativ.prazo + 'T23:59:59')
+            if (hoje > prazoDate) status = 'Atrasado'
+          }
+
+          return {
+            titulo: ativ.titulo,
+            nota: entrega?.nota !== undefined ? entrega.nota : null,
+            status: status
+          }
+        }) || []
+
+        setNotasAluno(notasFormatadas)
+      } catch (error) {
+        console.error("Erro ao buscar notas:", error)
+      } finally {
+        setLoadingNotas(false)
+      }
+    }
+
+    fetchNotasDoAluno()
+  }, [alunoSelecionado])
+
   const handleExportPDF = async () => {
     if (!boletimRef.current || !alunoSelecionado) return
     setIsExporting(true)
@@ -105,6 +177,9 @@ function RelatoriosPage() {
     const aluno = estudantes.find(a => a.id === e.target.value)
     if (aluno) setAlunoSelecionado(aluno)
   }
+
+  // Cálculos dinâmicos para o painel de resumo
+  const pendencias = notasAluno.filter(n => n.status === 'Pendente' || n.status === 'Atrasado').length;
 
   return (
     <div className="relative min-h-screen bg-gray-50/60 overflow-hidden">
@@ -145,7 +220,7 @@ function RelatoriosPage() {
 
             <button
               onClick={handleExportPDF}
-              disabled={isExporting || estudantes.length === 0}
+              disabled={isExporting || estudantes.length === 0 || loadingNotas}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] text-white px-5 py-2.5 h-11 rounded-xl font-medium text-sm shadow-sm transition-colors disabled:opacity-60 whitespace-nowrap shrink-0"
             >
               {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
@@ -181,8 +256,8 @@ function RelatoriosPage() {
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs sm:text-sm text-gray-500">Tarefas pendentes</p>
-              <h3 className="text-2xl font-bold text-gray-900 mt-1">3</h3>
+              <p className="text-xs sm:text-sm text-gray-500">Tarefas pendentes (aluno atual)</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-1">{pendencias}</h3>
             </div>
           </div>
         </div>
@@ -190,17 +265,23 @@ function RelatoriosPage() {
 
       {/* ========================================================= */}
       {/* BOLETIM A4 INVISÍVEL PARA PDF                             */}
-      {/* Mantido com identidade de documento formal, separada do   */}
-      {/* chrome do app, para não afetar a captura via html-to-image */}
       {/* ========================================================= */}
       {alunoSelecionado && (
         <div className="absolute left-[-9999px] top-0">
           <div ref={boletimRef} className="w-[794px] min-h-[1123px] bg-white p-12 text-slate-900 font-sans">
             
             <div className="border-b-2 border-[#6c47e6] pb-6 mb-8 flex justify-between items-end">
-              <div>
-                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Relatório Individual</h1>
-                <p className="text-slate-500 mt-1 text-lg">Escola Discover - Ano Letivo {alunoSelecionado.ano}</p>
+              <div className="flex flex-col gap-3">
+                {/* Logo Adicionada no PDF */}
+                <img 
+                  src="/img/logo_azul.png" 
+                  alt="Escola Discover" 
+                  className="h-10 w-auto object-contain"
+                />
+                <div>
+                  <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Relatório Individual</h1>
+                  <p className="text-slate-500 mt-1 text-lg">Ano Letivo {alunoSelecionado.ano}</p>
+                </div>
               </div>
               <div className="text-right">
                 <p className="text-sm text-slate-500">Data de Emissão</p>
@@ -226,28 +307,42 @@ function RelatoriosPage() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-[#eeeaff] text-[#5533c7]">
-                      <th className="p-4 font-semibold border-b border-slate-200">Módulo de Estudo</th>
+                      <th className="p-4 font-semibold border-b border-slate-200">Atividade / Módulo</th>
                       <th className="p-4 font-semibold border-b border-slate-200 text-center">Nota</th>
                       <th className="p-4 font-semibold border-b border-slate-200 text-center">Situação</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 bg-white">
-                    {/* Linhas Mockadas - Em breve conectaremos à tabela avaliacoes */}
-                    <tr>
-                      <td className="p-4 font-medium text-slate-700">Introdução ao HTML5</td>
-                      <td className="p-4 text-center font-bold">10.0</td>
-                      <td className="p-4 text-center"><span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">Aprovado</span></td>
-                    </tr>
-                    <tr>
-                      <td className="p-4 font-medium text-slate-700">Estilização com CSS3</td>
-                      <td className="p-4 text-center font-bold">8.5</td>
-                      <td className="p-4 text-center"><span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">Aprovado</span></td>
-                    </tr>
-                    <tr>
-                      <td className="p-4 font-medium text-slate-700">Lógica com JavaScript</td>
-                      <td className="p-4 text-center font-bold">-</td>
-                      <td className="p-4 text-center"><span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">Em andamento</span></td>
-                    </tr>
+                    {/* Tabela Dinâmica Baseada no Banco de Dados */}
+                    {loadingNotas ? (
+                      <tr>
+                        <td colSpan={3} className="p-8 text-center text-slate-500">
+                          Carregando notas do aluno...
+                        </td>
+                      </tr>
+                    ) : notasAluno.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="p-8 text-center text-slate-500">
+                          Nenhuma atividade registrada para este aluno.
+                        </td>
+                      </tr>
+                    ) : (
+                      notasAluno.map((item, index) => (
+                        <tr key={index}>
+                          <td className="p-4 font-medium text-slate-700">{item.titulo}</td>
+                          <td className="p-4 text-center font-bold">{item.nota !== null ? item.nota : '-'}</td>
+                          <td className="p-4 text-center">
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                              item.status === 'Entregue' ? 'bg-green-100 text-green-700' :
+                              item.status === 'Atrasado' ? 'bg-red-100 text-red-700' :
+                              'bg-amber-100 text-amber-700'
+                            }`}>
+                              {item.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>

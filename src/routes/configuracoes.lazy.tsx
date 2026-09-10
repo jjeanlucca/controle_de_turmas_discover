@@ -5,7 +5,17 @@ import { createClient } from '@supabase/supabase-js'
 import { User, Shield, Save, Loader2, Mail, Users, Plus, Key, Settings } from 'lucide-react'
 import { toast } from 'sonner'
 
-// Cliente secundário para criar contas sem deslogar o Admin
+// ==========================================
+// A ALTERNATIVA DEFINITIVA (MEMÓRIA FANTASMA)
+// ==========================================
+// Isso impede que o Supabase secundário encoste no cache do navegador
+// e cruze as informações com a sua sessão principal de Admin.
+const memoryStorage = {
+  getItem: () => null,
+  setItem: () => {},
+  removeItem: () => {},
+}
+
 const supabaseAdmin = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY,
@@ -13,6 +23,8 @@ const supabaseAdmin = createClient(
     auth: {
       persistSession: false,
       autoRefreshToken: false,
+      detectSessionInUrl: false,
+      storage: memoryStorage // Bloqueio total aplicado
     }
   }
 )
@@ -66,9 +78,6 @@ function ConfiguracoesPage() {
     fetchProfileAndTeam()
   }, [])
 
-  // ==========================
-  // FUNÇÕES DO PERFIL (INTOCADAS)
-  // ==========================
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
@@ -91,15 +100,17 @@ function ConfiguracoesPage() {
     setSaving(false)
   }
 
-  // ==========================
-  // FUNÇÕES DO ADMIN (BACKEND)
-  // ==========================
-  const handleCreateAccount = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // Substituímos o (e: React.FormEvent) porque não é mais um form
+  const handleCreateAccount = async () => {
+    if (!novoNome || !novoEmail || !novaSenha) {
+      toast.error('Preencha todos os campos para cadastrar o professor.')
+      return
+    }
+
     setCreating(true)
     
     try {
-      // 1. Cria o usuário no Auth (sem deslogar o admin)
+      // 1. Cria a conta no Auth silenciosamente
       const { data: authData, error: authError } = await supabaseAdmin.auth.signUp({
         email: novoEmail,
         password: novaSenha,
@@ -107,11 +118,11 @@ function ConfiguracoesPage() {
 
       if (authError) throw authError
 
-      // 2. Registra o Perfil Público
+      // 2. Salva o perfil com UPSERT e puxando exatamente as variáveis de estado
       if (authData.user) {
-        const { error: profileError } = await supabase.from('perfis').insert([{
+        const { error: profileError } = await supabaseAdmin.from('perfis').upsert([{
           id: authData.user.id,
-          nome: novoNome,
+          nome: novoNome, 
           email: novoEmail,
           cargo: novoCargo
         }])
@@ -119,11 +130,16 @@ function ConfiguracoesPage() {
         if (profileError) throw profileError
       }
 
+      // 3. Expulsa a sessão temporária para limpar a memória fantasma
+      await supabaseAdmin.auth.signOut()
+
       toast.success('Professor adicionado com sucesso!')
+      
       setNovoNome('')
       setNovoEmail('')
       setNovaSenha('')
-      fetchProfileAndTeam() // Recarrega a lista
+      
+      fetchProfileAndTeam() 
     } catch (error: any) {
       toast.error('Erro ao criar conta: ' + error.message)
     } finally {
@@ -158,7 +174,6 @@ function ConfiguracoesPage() {
     <div className="min-h-screen bg-gray-50/60">
       <div className="p-4 sm:p-6 md:p-10 max-w-4xl mx-auto space-y-6 md:space-y-8">
 
-        {/* Cabeçalho */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 pb-6 md:pb-7 border-b border-gray-200">
           <div className="w-12 h-12 rounded-2xl bg-[#6c47e6] flex items-center justify-center shadow-sm shadow-[#6c47e6]/20 shrink-0">
             <Settings className="w-6 h-6 text-white" strokeWidth={2} />
@@ -169,7 +184,6 @@ function ConfiguracoesPage() {
           </div>
         </div>
 
-        {/* Bloco: perfil */}
         <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
           <div className="px-4 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2.5">
             <User className="w-4 h-4 text-gray-400" />
@@ -200,7 +214,6 @@ function ConfiguracoesPage() {
                     className="w-full border border-gray-200 bg-gray-50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-gray-500 cursor-not-allowed"
                   />
                 </div>
-                <p className="text-xs text-gray-400 mt-1.5">O e-mail é vinculado à sua conta e não pode ser alterado por aqui.</p>
               </div>
 
               <div>
@@ -230,7 +243,6 @@ function ConfiguracoesPage() {
           </form>
         </div>
 
-        {/* Bloco: gerenciamento de equipe (apenas admin) */}
         {cargo === 'admin' && (
           <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
             <div className="px-4 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2.5">
@@ -239,12 +251,12 @@ function ConfiguracoesPage() {
             </div>
 
             <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
-              {/* Formulário de nova conta */}
-              <form onSubmit={handleCreateAccount} className="space-y-4">
+              
+              {/* O NAVEGADOR ESTÁ CEGO AQUI: Sem tag <form> e o tipo password foi mudado para texto */}
+              <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-gray-900 pb-2 border-b border-gray-100">Cadastrar novo professor</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   <input
-                    required
                     type="text"
                     placeholder="Nome do professor"
                     value={novoNome}
@@ -252,20 +264,18 @@ function ConfiguracoesPage() {
                     className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm bg-white"
                   />
                   <input
-                    required
                     type="email"
-                    placeholder="E-mail"
+                    placeholder="E-mail profissional"
                     value={novoEmail}
                     onChange={(e) => setNovoEmail(e.target.value)}
                     className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm bg-white"
                   />
+                  {/* Troquei para text para o Chrome não reconhecer como tela de login */}
                   <input
-                    required
-                    type="password"
-                    placeholder="Senha inicial"
+                    type="text" 
+                    placeholder="Senha provisória"
                     value={novaSenha}
                     onChange={(e) => setNovaSenha(e.target.value)}
-                    minLength={6}
                     className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 transition-all text-sm bg-white"
                   />
                   <select
@@ -279,7 +289,7 @@ function ConfiguracoesPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row justify-end">
                   <button
-                    type="submit"
+                    onClick={handleCreateAccount}
                     disabled={creating}
                     className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors disabled:opacity-70"
                   >
@@ -287,9 +297,8 @@ function ConfiguracoesPage() {
                     Criar conta
                   </button>
                 </div>
-              </form>
+              </div>
 
-              {/* Lista de equipe e redefinição de senha */}
               <div>
                 <h3 className="text-sm font-semibold text-gray-900 pb-2 mb-4 border-b border-gray-100">Contas ativas</h3>
                 <div className="space-y-3">

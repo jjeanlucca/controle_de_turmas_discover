@@ -2,7 +2,7 @@ import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { toast } from 'sonner'
-import { Loader2, Lock, Mail, Eye, EyeOff } from 'lucide-react'
+import { Loader2, Eye, EyeOff } from 'lucide-react'
 
 export const Route = createLazyFileRoute('/login' as never)({
   component: LoginPage,
@@ -71,86 +71,76 @@ function LoginPage() {
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
 
-      {/* CABEÇALHO DA TELA */}
+      {/* LOGO */}
       <div className="w-full sm:mx-auto sm:max-w-md relative z-10">
         <div className="flex justify-center">
-        <img 
-          src="/img/logo_branca.png" 
-          alt="Logo Discover" 
-          className="h-40 sm:h-48 w-auto object-contain drop-shadow-md brightness-110" 
-        />
-      </div>
-        {/* Margem superior devolvida (mt-4) para um espaçamento harmonioso */}
-        <p className="mt-4 text-center text-sm font-medium tracking-wide text-slate-200 drop-shadow-sm">
-          Acesse o painel de controle educacional
-        </p>
+          <img 
+            src="/img/logo_branca.png" 
+            alt="Logo Discover" 
+            className="h-16 sm:h-20 w-auto object-contain drop-shadow-md brightness-110" 
+          />
+        </div>
       </div>
 
-      {/* FORMULÁRIO */}
+      {/* CARTÃO DE LOGIN */}
       <div className="mt-6 w-full sm:mx-auto sm:max-w-md relative z-10">
-        <div className="bg-white/95 backdrop-blur-xl py-8 px-6 shadow-2xl shadow-black/30 rounded-2xl sm:px-10 border border-white/20 mx-auto w-full max-w-[400px] sm:max-w-none">
+        <div className="bg-black/75 backdrop-blur-xl py-7 px-6 sm:px-8 rounded-xl border border-white/10 shadow-2xl shadow-black/40 mx-auto w-full max-w-[420px] sm:max-w-none">
           <form className="space-y-5" onSubmit={handleLogin} noValidate>
             <div>
-              <label className="block text-sm font-medium tracking-wide text-gray-700 mb-1.5">
-                E-mail
+              <label className="block text-sm font-semibold text-white mb-1.5">
+                Email
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Mail className="h-4 w-4 text-gray-400" />
-                </div>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 sm:text-sm transition-all bg-white"
-                  placeholder="professor@escola.com"
-                />
-              </div>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full px-4 py-2.5 bg-white/5 border border-white/15 rounded-lg outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/20 sm:text-sm text-sm text-white placeholder-gray-500 transition-all"
+              />
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-sm font-medium tracking-wide text-gray-700">
-                  Senha
-                </label>
-                <button
-                  type="button"
-                  onClick={handleForgotPassword}
-                  className="text-sm font-medium tracking-tight text-[#6c47e6] hover:text-[#5533c7] transition-colors"
-                >
-                  Esqueci minha senha
-                </button>
-              </div>
+              <label className="block text-sm font-semibold text-white mb-1.5">
+                Senha
+              </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Lock className="h-4 w-4 text-gray-400" />
-                </div>
                 <input
                   type={showPassword ? 'text' : 'password'} 
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/10 sm:text-sm transition-all bg-white"
-                  placeholder="••••••••"
+                  className="block w-full px-4 pr-10 py-2.5 bg-white/5 border border-white/15 rounded-lg outline-none focus:border-[#6c47e6] focus:ring-4 focus:ring-[#6c47e6]/20 sm:text-sm text-sm text-white placeholder-gray-500 transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-[#6c47e6] transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-[#a78bfa] transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex justify-center items-center py-2.5 px-4 rounded-xl shadow-sm text-sm font-semibold tracking-wide text-white bg-[#6c47e6] hover:bg-[#5533c7] active:bg-[#4a2bb0] focus:outline-none focus:ring-4 focus:ring-[#6c47e6]/20 transition-colors disabled:opacity-70 disabled:cursor-not-allowed mt-4"
-            >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Entrar no sistema'}
-            </button>
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+              <p className="text-sm text-gray-300">
+                Esqueceu sua senha?{' '}
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-[#a78bfa] hover:text-[#c4b5fd] font-semibold transition-colors"
+                >
+                  Clique aqui
+                </button>
+              </p>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-lg border-2 border-[#a78bfa] text-[#a78bfa] font-semibold text-sm hover:bg-[#a78bfa] hover:text-gray-900 active:bg-[#8b6ef0] transition-colors disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'login'}
+              </button>
+            </div>
           </form>
         </div>
       </div>

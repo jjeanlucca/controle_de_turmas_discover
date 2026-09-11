@@ -189,16 +189,27 @@ function TurmasPage() {
 
     setAddingAluno(true);
     try {
-      // 1. Cria o aluno na tabela principal
+      // 1. Pega a sessão do usuário logado para carimbar no banco
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.user.id) {
+        throw new Error("Usuário não autenticado.");
+      }
+
+      // 2. Cria o aluno na tabela principal, enviando o professor_id
       const { data: alunoData, error: alunoError } = await supabase
         .from("alunos")
-        .insert([{ nome: novoAlunoNome, status: 'ativo' }])
+        .insert([{ 
+          nome: novoAlunoNome, 
+          status: 'ativo',
+          professor_id: session.user.id // <-- O carimbo obrigatório do RLS aqui também!
+        }])
         .select("id")
         .single();
 
       if (alunoError) throw alunoError;
 
-      // 2. Vincula o aluno à turma na tabela associativa N:N
+      // 3. Vincula o aluno à turma na tabela associativa N:N
       const { error: linkError } = await supabase
         .from("turma_alunos")
         .insert([{ turma_id: selectedTurma.id, aluno_id: alunoData.id }]);

@@ -347,7 +347,7 @@ function RelatoriosPage() {
                 </table>
               </div>
             </div>
-
+                  
             <div className="mt-24 pt-8 border-t border-slate-200 flex justify-center">
               <div className="text-center">
                 <div className="w-64 border-b border-slate-400 mb-2 mx-auto"></div>

@@ -1,5 +1,61 @@
-# Logs
-logs
+# ==============================================================================
+# 🚨 SEGURANÇA MÁXIMA E VARIÁVEIS DE AMBIENTE (NUNCA COMITAR ISSO)
+# ==============================================================================
+# Arquivos de ambiente (Senhas, chaves do Supabase, APIs)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*
+
+# Chaves de criptografia e certificados SSL
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+
+# Arquivos de credenciais de serviços (Google, AWS, Firebase, etc)
+secrets.json
+client_secret.json
+credentials.json
+auth.json
+gcp-key.json
+
+# Configurações de gerenciadores de pacotes (podem conter tokens de acesso privados)
+.npmrc
+.yarnrc
+
+# Cloudflare e Servidores locais
+.dev.vars
+*.local
+
+# ==============================================================================
+# 📦 DEPENDÊNCIAS
+# ==============================================================================
+node_modules/
+.pnp
+.pnp.js
+.pnp.cjs
+
+# ==============================================================================
+# 🏗️ BUILD E SAÍDAS (GERADOS AUTOMATICAMENTE)
+# ==============================================================================
+dist/
+dist-ssr/
+build/
+out/
+.output/
+.nitro/
+coverage/
+.nyc_output/
+
+# ==============================================================================
+# 🗄️ LOGS E DEBUGGING
+# ==============================================================================
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,26 +63,47 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-.output
-.vinxi
-.tanstack/**
-.nitro
-*.local
-
-# Wrangler / Cloudflare
+# ==============================================================================
+# 🛠️ FRAMEWORKS E FERRAMENTAS (VITE, TANSTACK, ETC)
+# ==============================================================================
+.vinxi/
+.tanstack/
 .wrangler/
-.dev.vars
+.next/
+.nuxt/
+.serverless/
+.cache/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
 
-# Editor directories and files
+# ==============================================================================
+# 💻 SISTEMA OPERACIONAL (GERADOS PELO MAC, WINDOWS E LINUX)
+# ==============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ==============================================================================
+# 📝 EDITORES DE CÓDIGO (VSCODE, INTELLIJ, ETC)
+# ==============================================================================
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+!.vscode/settings.json
+.idea/
+.project
+.classpath
+.c9/
+*.launch
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.bak
+*.tmp
